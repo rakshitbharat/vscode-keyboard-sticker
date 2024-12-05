@@ -1,7 +1,7 @@
 export default {
   id: "vscodePurple",
-  name: "VSCode Purple",
-  description: "Classic VSCode theme with purple accents",
+  name: "Purple Stickers",
+  description: "Classic VSCode theme with purple sticker accents",
   author: "Your Name",
   version: "1.0.0",
   styles: {

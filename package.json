@@ -1,5 +1,6 @@
 {
-  "name": "vscode-keyboard-shortcuts",
+  "name": "vscode-keyboard-stickers",
+  "description": "Interactive keyboard sticker visualizer for VSCode shortcuts",
   "private": true,
   "version": "0.0.0",
   "author": "rakshitbharat",

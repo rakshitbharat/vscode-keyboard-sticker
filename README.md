@@ -1,21 +1,21 @@
-# VSCode Keyboard Shortcuts Visualizer
+# VSCode Keyboard Stickers
 
-An interactive keyboard shortcut visualizer for Visual Studio Code, showing different shortcuts across macOS, Windows, and Ubuntu. Built with Next.js and styled-components.
+An interactive keyboard sticker visualizer that displays VSCode shortcuts across different operating systems. Add beautiful, themed stickers to your keyboard layout with OS-specific shortcut hints.
 
-![VSCode Keyboard Shortcuts Visualizer](./public/preview.png)
+![VSCode Keyboard Stickers](./public/preview.png)
 
 ## Features
 
-- 🎨 Interactive keyboard layout
-- 💻 OS-specific shortcuts (macOS, Windows, Ubuntu)
-- 🎯 Multiple themes (VSCode Purple, VSCode Blue)
+- 🎨 Interactive sticker placement
+- 💻 OS-specific sticker content
+- 🎯 Multiple sticker themes (Purple, Blue)
 - 🔄 Real-time theme switching
-- 📱 Responsive design
+- 📱 Responsive sticker layout
 - 🚀 Fast and lightweight
 
 ## Demo
 
-Check out the live demo: [VSCode Keyboard Shortcuts Visualizer](https://rakshitbharat.github.io/vscode-keyboard-shortcuts)
+Check out the live demo: [VSCode Keyboard Stickers](https://rakshitbharat.github.io/vscode-keyboard-shortcuts)
 
 ## Getting Started
 
@@ -54,20 +54,20 @@ Contributions are welcome! Here's how you can help:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### Adding New Themes
+### Adding New Sticker Themes
 
-You can add new themes by creating a new config file in `src/data/stickerConfigs/`:
+You can add new sticker themes by creating a new config file in `src/data/stickerConfigs/`:
 
 ```javascript
 export default {
   id: "yourTheme",
-  name: "Your Theme",
-  description: "Your theme description",
+  name: "Your Sticker Theme",
+  description: "Your sticker theme description",
   styles: {
-    // OS-specific styles
+    // OS-specific sticker styles
   },
   layout: {
-    // Shortcut mappings
+    // Sticker content and positions
   },
 };
 ```
@@ -75,9 +75,9 @@ export default {
 ## Tech Stack
 
 - [Next.js](https://nextjs.org/) - React framework
-- [Styled Components](https://styled-components.com/) - Styling
+- [Styled Components](https://styled-components.com/) - Sticker styling
 - [Redux Toolkit](https://redux-toolkit.js.org/) - State management
-- [Redux Persist](https://github.com/rt2zz/redux-persist) - Persistence
+- [Redux Persist](https://github.com/rt2zz/redux-persist) - Theme persistence
 
 ## License
 

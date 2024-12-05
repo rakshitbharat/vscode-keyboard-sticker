@@ -147,7 +147,7 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <Title>VSCode Keyboard Shortcuts</Title>
+      <Title>VSCode Keyboard Stickers</Title>
       <FilterSection>
         <FilterGroup>
           <FilterLabel>Operating System</FilterLabel>
@@ -165,7 +165,7 @@ const Header = () => {
         </FilterGroup>
 
         <FilterGroup>
-          <FilterLabel>Sticker Config</FilterLabel>
+          <FilterLabel>Sticker Theme</FilterLabel>
           <FilterContainer>
             {configOptions.map((config) => (
               <FilterButton

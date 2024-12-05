@@ -1,7 +1,7 @@
 export default {
   id: "vscodeBlue",
-  name: "VSCode Blue",
-  description: "Modern VSCode theme with blue accents",
+  name: "Blue Stickers",
+  description: "Modern VSCode theme with blue sticker accents",
   author: "Your Name",
   version: "1.0.0",
   styles: {
