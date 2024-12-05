@@ -1,4 +1,4 @@
-const baseSize = 50;
+const baseSize = 60;
 
 // Add OS-specific configurations
 export const osConfigs = {

@@ -44,10 +44,10 @@ const KeyboardContainer = styled.div`
 const Section = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 36px;
+  gap: 12px;
+  padding: 40px;
   background: ${(props) => props.theme.sectionBg};
-  border-radius: 20px;
+  border-radius: 24px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 0, 0, 0.2) inset;
   border: 1px solid #2a2a2a;
   position: relative;
@@ -84,29 +84,29 @@ const Section = styled.div`
   }
 
   @media (max-width: 1400px) {
-    padding: 28px;
+    padding: 32px;
   }
   @media (max-width: 1200px) {
-    padding: 24px;
+    padding: 28px;
   }
   @media (max-width: 900px) {
-    padding: 20px;
+    padding: 24px;
   }
   @media (max-width: 600px) {
-    padding: 16px;
+    padding: 20px;
   }
 `;
 
 const Row = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 10px;
   position: relative;
 
   @media (max-width: 1400px) {
-    gap: 6px;
+    gap: 8px;
   }
   @media (max-width: 900px) {
-    gap: 4px;
+    gap: 6px;
   }
 `;
 

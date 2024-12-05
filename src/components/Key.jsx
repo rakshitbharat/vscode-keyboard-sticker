@@ -10,18 +10,18 @@ const KeyContainer = styled.div`
     rgba(48, 48, 48, 1) 100%
   );
   border: 1px solid #1a1a1a;
-  border-radius: 12px;
+  border-radius: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 2px;
+  margin: 3px;
   cursor: default;
   position: ${(props) => props.$position || "relative"};
   top: ${(props) => props.$top};
   right: ${(props) => props.$right};
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.4),
     0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.3),
-    0 3px 6px rgba(0, 0, 0, 0.2), 0 4px 0 rgba(0, 0, 0, 0.4);
+    0 4px 7px rgba(0, 0, 0, 0.2), 0 5px 0 rgba(0, 0, 0, 0.4);
   transition: all 0.15s ease;
   z-index: ${(props) => props.$zIndex || "auto"};
   color: #ffffff;
@@ -73,11 +73,11 @@ const KeyContainer = styled.div`
     transform: translateY(2px);
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.4),
       0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.3),
-      0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 0 rgba(0, 0, 0, 0.4);
+      0 3px 5px rgba(0, 0, 0, 0.2), 0 3px 0 rgba(0, 0, 0, 0.4);
   }
 
   &:active {
-    transform: translateY(4px);
+    transform: translateY(5px);
     background: linear-gradient(
       180deg,
       rgba(38, 38, 38, 1) 0%,
