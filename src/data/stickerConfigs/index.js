@@ -2,11 +2,14 @@
 import vscodePurple from "./vscodePurple";
 import vscodeBlue from "./vscodeBlue";
 
-const stickerRegistry = {
+// Export as a named constant to ensure it's available immediately
+export const stickerRegistry = {
   vscodePurple,
   vscodeBlue,
-  // Add more configs here as they're created
 };
 
-export { stickerRegistry };
+// Export default config
 export const defaultConfig = "vscodePurple";
+
+// Export individual configs for direct access if needed
+export { vscodePurple, vscodeBlue };

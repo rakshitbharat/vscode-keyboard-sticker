@@ -83,30 +83,47 @@ const Sticker = ({ keyData }) => {
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
 
-  if (!keyData) return null;
-
-  // Get the key label and normalize it
-  const keyLabel = keyData.label?.toLowerCase();
-
   // Debug logs
   console.log("Sticker render:", {
     keyData,
-    keyLabel,
     selectedOS,
     selectedConfig,
-    registry: stickerRegistry,
-    config: stickerRegistry?.[selectedConfig],
-    layout: stickerRegistry?.[selectedConfig]?.layout,
+    registryAvailable: !!stickerRegistry,
+    configs: Object.keys(stickerRegistry || {}),
   });
 
-  const config = stickerRegistry?.[selectedConfig]?.styles?.[selectedOS];
+  // Early return if any required data is missing
+  if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
+    console.log("Missing required data:", {
+      label: keyData?.label,
+      selectedOS,
+      selectedConfig,
+      registryAvailable: !!stickerRegistry,
+    });
+    return null;
+  }
 
-  // Find matching sticker data by normalizing both the key label and layout keys
-  const stickerData = Object.entries(
-    stickerRegistry?.[selectedConfig]?.layout || {}
-  ).find(([key]) => key.toLowerCase() === keyLabel)?.[1];
+  // Get the key label and normalize it
+  const keyLabel = keyData.label.toLowerCase();
 
-  if (!config || !stickerData) return null;
+  const config = stickerRegistry[selectedConfig]?.styles?.[selectedOS];
+  const layout = stickerRegistry[selectedConfig]?.layout;
+
+  // Debug the matching process
+  console.log("Matching process:", {
+    keyLabel,
+    configAvailable: !!config,
+    layoutAvailable: !!layout,
+    layoutKeys: Object.keys(layout || {}),
+  });
+
+  // Find matching sticker data
+  const stickerData = layout?.[keyLabel];
+
+  if (!config || !stickerData) {
+    console.log("No matching sticker data found");
+    return null;
+  }
 
   const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;
   const IconComponent =
