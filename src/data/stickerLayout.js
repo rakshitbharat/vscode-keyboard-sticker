@@ -1,61 +1,48 @@
 export const stickerTypes = {
-  BASIC: "basic", // Basic VSCode stickers
-  INTELLIJ: "intellij", // IntelliJ-style stickers
-  SUBLIME: "sublime", // Sublime Text style stickers
-  CUSTOM: "custom", // Custom sticker layout
+  BASIC: "basic",
+  EDITING: "editing",
+  TERMINAL: "terminal",
+  DEBUG: "debug",
+  GIT: "git",
 };
 
 export const defaultStickerType = "basic";
 
-// Each sticker config defines which keys should have stickers
+// VSCode sticker layouts
 export const stickerLayouts = {
   basic: {
-    // Key label -> sticker content
-    Z: "Undo",
-    X: "Cut",
-    C: "Copy",
-    V: "Paste",
-    F: "Find",
-    N: "New File",
-    S: "Save",
-    A: "Select All",
-    B: "Toggle Sidebar",
-    "/": "Comment",
-    P: "Command Palette",
-    "[": "Go to Definition",
-    "]": "Go Back",
-    F1: "Help",
-    F5: "Debug",
-    F9: "Breakpoint",
-    F11: "Full Screen",
-    F12: "Dev Tools",
+    C: ["Copy", "Copy Line"],
+    V: ["Paste", "Paste Line"],
+    X: ["Cut", "Cut Line"],
+    Z: ["Undo", "Undo Last"],
+    S: ["Save", "Save All"],
+    F: ["Find", "Find in Files"],
+    B: ["Toggle Sidebar"],
+    P: ["Command Palette"],
   },
-  intellij: {
-    // IntelliJ-style stickers
-    N: "New",
-    E: "Extract",
-    R: "Refactor",
-    D: "Debug",
-    F: "Find",
-    G: "Generate",
-    T: "Test",
-    B: "Build",
-    Q: "Quick Fix",
-    "[": "Previous",
-    "]": "Next",
+  editing: {
+    D: ["Duplicate", "Delete Line"],
+    L: ["Select Line", "Select All"],
+    "/": ["Comment", "Block Comment"],
+    H: ["Replace", "Replace All"],
+    R: ["Rename Symbol"],
   },
-  sublime: {
-    // Sublime Text style stickers
-    D: "Duplicate",
-    J: "Join Lines",
-    L: "Select Line",
-    "/": "Comment",
-    F: "Find",
-    H: "Replace",
-    P: "Go to File",
-    R: "Go to Symbol",
+  terminal: {
+    J: ["Terminal", "New Terminal"],
+    "\\": ["Split Terminal"],
+    T: ["New Tab"],
+    K: ["Clear"],
   },
-  custom: {
-    // Users can define their own sticker layout
+  debug: {
+    F5: ["Start/Continue"],
+    F9: ["Breakpoint"],
+    F10: ["Step Over"],
+    F11: ["Step Into"],
+  },
+  git: {
+    G: ["Source Control"],
+    C: ["Commit"],
+    P: ["Push/Pull"],
+    M: ["Merge"],
   },
 };

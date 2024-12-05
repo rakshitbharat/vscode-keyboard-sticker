@@ -107,11 +107,8 @@ const Key = ({ keyData, style }) => {
     position,
   } = keyData;
 
-  const selectedOS = useSelector((state) => state.keyboard.selectedOS);
-  const stickerType = useSelector((state) => state.keyboard.stickerType);
-
-  // Get sticker content if this key should have a sticker
-  const stickerContent = stickerLayouts[stickerType]?.[label];
+  // Debug log
+  console.log("Key render:", { keyData, label });
 
   if (spacer) {
     return <Spacer $width={width} $height={baseSize} />;
@@ -128,7 +125,7 @@ const Key = ({ keyData, style }) => {
       $zIndex={style?.zIndex}
     >
       {label}
-      {stickerContent && <Sticker shortcut={stickerContent} />}
+      <Sticker keyData={keyData} />
     </KeyContainer>
   );
 };

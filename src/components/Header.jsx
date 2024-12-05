@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedOS, setShortcutType } from "@/store/slices/keyboardSlice";
-import { shortcutTypes } from "@/data/shortcutConfigs";
+import { setSelectedOS, setSelectedConfig } from "@/store/slices/keyboardSlice";
+import { stickerRegistry } from "@/data/stickerConfigs";
 
 const HeaderContainer = styled.div`
   text-align: center;
@@ -129,7 +129,7 @@ const ConfigKey = styled.span`
 const Header = () => {
   const dispatch = useDispatch();
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
-  const shortcutType = useSelector((state) => state.keyboard.shortcutType);
+  const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
 
   const osOptions = [
     { id: "mac", label: "macOS" },
@@ -137,30 +137,13 @@ const Header = () => {
     { id: "ubuntu", label: "Ubuntu" },
   ];
 
-  const configurations = {
-    mac: [
-      { key: "⌘", description: "Command" },
-      { key: "⌥", description: "Option" },
-      { key: "⌃", description: "Control" },
-      { key: "⇧", description: "Shift" },
-    ],
-    windows: [
-      { key: "Win", description: "Windows" },
-      { key: "Alt", description: "Alt" },
-      { key: "Ctrl", description: "Control" },
-      { key: "Shift", description: "Shift" },
-    ],
-    ubuntu: [
-      { key: "Super", description: "Super" },
-      { key: "Alt", description: "Alt" },
-      { key: "Ctrl", description: "Control" },
-      { key: "Shift", description: "Shift" },
-    ],
-  };
+  console.log("stickerRegistry:", stickerRegistry);
+  console.log("selectedConfig:", selectedConfig);
 
-  const handleOSChange = (osId) => {
-    dispatch(setSelectedOS(osId));
-  };
+  const configOptions = [
+    { id: "vscodePurple", label: "VSCode Purple" },
+    { id: "vscodeBlue", label: "VSCode Blue" },
+  ];
 
   return (
     <HeaderContainer>
@@ -173,7 +156,7 @@ const Header = () => {
               <FilterButton
                 key={os.id}
                 $active={selectedOS === os.id}
-                onClick={() => handleOSChange(os.id)}
+                onClick={() => dispatch(setSelectedOS(os.id))}
               >
                 {os.label}
               </FilterButton>
@@ -182,29 +165,22 @@ const Header = () => {
         </FilterGroup>
 
         <FilterGroup>
-          <FilterLabel>Shortcut Category</FilterLabel>
+          <FilterLabel>Sticker Config</FilterLabel>
           <FilterContainer>
-            {Object.entries(shortcutTypes).map(([key, value]) => (
+            {configOptions.map((config) => (
               <FilterButton
-                key={value}
-                $active={shortcutType === value}
-                onClick={() => dispatch(setShortcutType(value))}
+                key={config.id}
+                $active={selectedConfig === config.id}
+                onClick={() => dispatch(setSelectedConfig(config.id))}
               >
-                {key.toLowerCase()}
+                {config.label}
               </FilterButton>
             ))}
           </FilterContainer>
         </FilterGroup>
       </FilterSection>
 
-      <ConfigContainer>
-        {configurations[selectedOS].map((config, index) => (
-          <ConfigItem key={index}>
-            <ConfigKey>{config.key}</ConfigKey>
-            <span>{config.description}</span>
-          </ConfigItem>
-        ))}
-      </ConfigContainer>
+      <ConfigContainer>{/* ... rest of the component ... */}</ConfigContainer>
     </HeaderContainer>
   );
 };

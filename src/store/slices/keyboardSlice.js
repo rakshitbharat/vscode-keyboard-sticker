@@ -1,11 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { defaultOS, defaultShortcutType } from "@/data/shortcutConfigs";
-import { defaultStickerType } from "@/data/stickerLayout";
+import { defaultConfig } from "@/data/stickerConfigs";
 
 const initialState = {
-  selectedOS: defaultOS,
-  shortcutType: defaultShortcutType,
-  stickerType: defaultStickerType,
+  selectedOS: "mac",
+  selectedConfig: defaultConfig,
 };
 
 const keyboardSlice = createSlice({
@@ -15,15 +13,11 @@ const keyboardSlice = createSlice({
     setSelectedOS: (state, action) => {
       state.selectedOS = action.payload;
     },
-    setShortcutType: (state, action) => {
-      state.shortcutType = action.payload;
-    },
-    setStickerType: (state, action) => {
-      state.stickerType = action.payload;
+    setSelectedConfig: (state, action) => {
+      state.selectedConfig = action.payload;
     },
   },
 });
 
-export const { setSelectedOS, setShortcutType, setStickerType } =
-  keyboardSlice.actions;
+export const { setSelectedOS, setSelectedConfig } = keyboardSlice.actions;
 export default keyboardSlice.reducer;
