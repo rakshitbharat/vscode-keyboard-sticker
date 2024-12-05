@@ -9,14 +9,16 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 3rem;
-  margin-bottom: 2rem;
+  font-size: 3.5rem;
+  margin-bottom: 2.5rem;
   background: ${(props) => props.theme.brand.gradient};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  font-weight: 700;
-  letter-spacing: -1px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter",
+    sans-serif;
 `;
 
 const FilterContainer = styled.div`
@@ -78,13 +80,23 @@ const ConfigItem = styled.div`
 
 const ConfigKey = styled.span`
   background: ${(props) => props.theme.sectionBg};
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  font-family: "SF Mono", "Fira Code", monospace;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter",
+    sans-serif;
   border: 1px solid #3d3d3d;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2),
     0 1px 0 rgba(255, 255, 255, 0.1) inset;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1.2rem;
+
+  /* Special styling for icon keys */
+  ${(props) =>
+    props.children.match(/[⌘⌥⌃⇧]/) &&
+    `
+    font-size: 1.4rem;
+    font-weight: 400;
+  `}
 `;
 
 const Header = () => {

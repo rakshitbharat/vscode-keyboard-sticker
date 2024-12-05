@@ -10,7 +10,7 @@ const KeyContainer = styled.div`
     rgba(48, 48, 48, 1) 100%
   );
   border: 1px solid #1a1a1a;
-  border-radius: 8px;
+  border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,17 +27,27 @@ const KeyContainer = styled.div`
   color: #ffffff;
   font-size: ${(props) =>
     props.$label.includes("\n")
-      ? "0.6rem"
+      ? "0.8rem"
       : props.$label.length > 2
-      ? "0.7rem"
-      : "0.9rem"};
+      ? "0.9rem"
+      : "1.2rem"};
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.3;
   white-space: pre-line;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
   user-select: none;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.5px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter",
+    sans-serif;
+
+  /* Special styling for icon keys */
+  ${(props) =>
+    props.$label.match(/[⌘⌥⌃⇧↑↓←→]/) &&
+    `
+    font-size: 1.4rem;
+    font-weight: 400;
+  `}
 
   &::before {
     content: "";
