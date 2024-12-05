@@ -86,7 +86,7 @@ const Sticker = ({ keyData }) => {
   if (!keyData) return null;
 
   // Get the key label and normalize it
-  const keyLabel = keyData.label?.toUpperCase();
+  const keyLabel = keyData.label?.toLowerCase();
 
   // Debug logs
   console.log("Sticker render:", {
@@ -104,7 +104,7 @@ const Sticker = ({ keyData }) => {
   // Find matching sticker data by normalizing both the key label and layout keys
   const stickerData = Object.entries(
     stickerRegistry?.[selectedConfig]?.layout || {}
-  ).find(([key]) => key.toUpperCase() === keyLabel)?.[1];
+  ).find(([key]) => key.toLowerCase() === keyLabel)?.[1];
 
   if (!config || !stickerData) return null;
 
