@@ -12,71 +12,88 @@ import { useSelector } from "react-redux";
 const KeyboardContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 24px;
   width: fit-content;
   max-width: 100%;
   margin: 0 auto;
-  padding: 40px;
-  background: linear-gradient(145deg, #1a1a1a, #222);
-  border-radius: 24px;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 0, 0, 0.5) inset;
+  padding: 48px;
+  background: ${(props) => props.theme.keyboardBg};
+  border-radius: 30px;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 0, 0, 0.5) inset,
+    ${(props) => props.theme.brand.shadow};
+  border: 1px solid #333;
 
   @media (max-width: 1400px) {
-    padding: 30px;
-    gap: 15px;
+    padding: 36px;
+    gap: 20px;
   }
   @media (max-width: 1200px) {
-    padding: 25px;
-    gap: 12px;
+    padding: 30px;
+    gap: 16px;
   }
   @media (max-width: 900px) {
-    padding: 20px;
-    gap: 10px;
+    padding: 24px;
+    gap: 12px;
   }
   @media (max-width: 600px) {
-    padding: 15px;
-    gap: 8px;
+    padding: 20px;
+    gap: 10px;
   }
 `;
 
 const Section = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 32px;
-  background: linear-gradient(135deg, #2a2a2a, #252525);
-  border-radius: 16px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 0, 0, 0.2) inset;
-  border: 1px solid #1a1a1a;
+  gap: 10px;
+  padding: 36px;
+  background: ${(props) => props.theme.sectionBg};
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 0, 0, 0.2) inset;
+  border: 1px solid #2a2a2a;
   position: relative;
-
-  @media (max-width: 1400px) {
-    padding: 24px;
-  }
-  @media (max-width: 1200px) {
-    padding: 20px;
-  }
-  @media (max-width: 900px) {
-    padding: 16px;
-  }
-  @media (max-width: 600px) {
-    padding: 12px;
-  }
+  overflow: hidden;
 
   &::before {
     content: "";
     position: absolute;
-    top: 1px;
-    left: 1px;
-    right: 1px;
-    height: 1px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0.05),
       rgba(255, 255, 255, 0.1),
       rgba(255, 255, 255, 0.05)
     );
-    border-radius: 16px 16px 0 0;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      circle at 50% -20%,
+      rgba(255, 255, 255, 0.1),
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  @media (max-width: 1400px) {
+    padding: 28px;
+  }
+  @media (max-width: 1200px) {
+    padding: 24px;
+  }
+  @media (max-width: 900px) {
+    padding: 20px;
+  }
+  @media (max-width: 600px) {
+    padding: 16px;
   }
 `;
 
@@ -95,15 +112,15 @@ const Row = styled.div`
 
 const SectionsContainer = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 24px;
   flex-wrap: wrap;
   justify-content: center;
 
   @media (max-width: 1400px) {
-    gap: 15px;
+    gap: 20px;
   }
   @media (max-width: 900px) {
-    gap: 10px;
+    gap: 16px;
   }
 `;
 

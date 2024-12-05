@@ -9,12 +9,14 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #bb86fc 0%, #8b55f5 100%);
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  background: ${(props) => props.theme.brand.gradient};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 700;
+  letter-spacing: -1px;
 `;
 
 const FilterContainer = styled.div`
@@ -25,19 +27,38 @@ const FilterContainer = styled.div`
 `;
 
 const FilterButton = styled.button`
-  padding: 0.5rem 1.5rem;
-  border: 2px solid ${(props) => (props.$active ? "#bb86fc" : "#3d3d3d")};
+  padding: 0.75rem 2rem;
+  border: 2px solid
+    ${(props) => (props.$active ? props.theme.accent.primary : "#3d3d3d")};
   background: ${(props) =>
-    props.$active ? "rgba(187, 134, 252, 0.1)" : "transparent"};
-  color: ${(props) => (props.$active ? "#bb86fc" : "#ffffff")};
-  border-radius: 8px;
+    props.$active
+      ? `linear-gradient(135deg, 
+          ${props.theme.accent.primary}26, 
+          ${props.theme.accent.secondary}26)`
+      : "transparent"};
+  color: ${(props) => (props.$active ? props.theme.accent.primary : "#ffffff")};
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    border-color: #bb86fc;
-    background: rgba(187, 134, 252, 0.05);
+    border-color: ${(props) => props.theme.accent.primary};
+    background: linear-gradient(
+      135deg,
+      ${(props) => `${props.theme.accent.primary}1a`},
+      ${(props) => `${props.theme.accent.secondary}1a`}
+    );
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -56,11 +77,14 @@ const ConfigItem = styled.div`
 `;
 
 const ConfigKey = styled.span`
-  background: #2d2d2d;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-family: monospace;
+  background: ${(props) => props.theme.sectionBg};
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-family: "SF Mono", "Fira Code", monospace;
   border: 1px solid #3d3d3d;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+  font-weight: 500;
 `;
 
 const Header = () => {

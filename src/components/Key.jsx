@@ -4,7 +4,11 @@ import styled from "styled-components";
 const KeyContainer = styled.div`
   width: ${(props) => props.$width}px;
   height: ${(props) => props.$height}px;
-  background: linear-gradient(to bottom, #363636 0%, #2d2d2d 40%, #2b2b2b 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(66, 66, 66, 1) 0%,
+    rgba(48, 48, 48, 1) 100%
+  );
   border: 1px solid #1a1a1a;
   border-radius: 8px;
   display: flex;
@@ -15,10 +19,10 @@ const KeyContainer = styled.div`
   position: ${(props) => props.$position || "relative"};
   top: ${(props) => props.$top};
   right: ${(props) => props.$right};
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.1) inset,
-    0 0 3px rgba(0, 0, 0, 0.3), 0 3px 6px rgba(0, 0, 0, 0.2),
-    0 4px 0 rgba(0, 0, 0, 0.4);
-  transition: all 0.1s ease;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.3),
+    0 3px 6px rgba(0, 0, 0, 0.2), 0 4px 0 rgba(0, 0, 0, 0.4);
+  transition: all 0.15s ease;
   z-index: ${(props) => props.$zIndex || "auto"};
   color: #ffffff;
   font-size: ${(props) =>
@@ -32,6 +36,8 @@ const KeyContainer = styled.div`
   white-space: pre-line;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
   user-select: none;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 
   &::before {
     content: "";
@@ -50,27 +56,25 @@ const KeyContainer = styled.div`
 
   &:hover {
     background: linear-gradient(
-      to bottom,
-      #3f3f3f 0%,
-      #363636 40%,
-      #333333 100%
+      180deg,
+      rgba(76, 76, 76, 1) 0%,
+      rgba(58, 58, 58, 1) 100%
     );
     transform: translateY(2px);
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.4),
-      0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 3px rgba(0, 0, 0, 0.3),
+      0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.3),
       0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 0 rgba(0, 0, 0, 0.4);
   }
 
   &:active {
     transform: translateY(4px);
     background: linear-gradient(
-      to bottom,
-      #2d2d2d 0%,
-      #282828 40%,
-      #252525 100%
+      180deg,
+      rgba(38, 38, 38, 1) 0%,
+      rgba(48, 48, 48, 1) 100%
     );
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.4),
-      0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 0 2px rgba(0, 0, 0, 0.3),
+      0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 2px rgba(0, 0, 0, 0.3),
       0 0 4px rgba(0, 0, 0, 0.2) inset;
   }
 `;
