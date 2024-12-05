@@ -1,0 +1,11 @@
+[install]
+registry = "https://registry.npmjs.org"
+exact = true
+production = true
+
+[test]
+coverage = true
+
+[debug]
+enabled = false
+ 
