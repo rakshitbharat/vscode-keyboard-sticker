@@ -2,7 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import keyboardReducer from "./slices/keyboardSlice";
-import { stickerRegistry, defaultConfig } from "@/data/stickerConfigs";
+import { stickerRegistry } from "@/data/stickerConfigs";
+import { defaultConfig } from "@/data/stickerConfigs/types";
 
 const persistConfig = {
   key: "root",
@@ -10,34 +11,25 @@ const persistConfig = {
   whitelist: ["keyboard"],
 };
 
-// Validate initial state against available configs
-const validateInitialState = (state) => {
-  if (!state) return state;
-
-  const validConfig =
-    state.keyboard?.selectedConfig &&
-    stickerRegistry[state.keyboard.selectedConfig];
-
-  if (!validConfig) {
-    return {
-      ...state,
-      keyboard: {
-        ...state.keyboard,
-        selectedConfig: defaultConfig,
-      },
-    };
-  }
-
-  return state;
-};
-
 const persistedReducer = persistReducer(persistConfig, keyboardReducer);
 
+// Create store with middleware to handle initialization
 export const store = configureStore({
   reducer: {
     keyboard: persistedReducer,
   },
-  preloadedState: validateInitialState(undefined),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST"],
+      },
+    }),
+});
+
+// Initialize store with default values if needed
+store.dispatch({
+  type: "keyboard/setSelectedConfig",
+  payload: defaultConfig,
 });
 
 export const persistor = persistStore(store);

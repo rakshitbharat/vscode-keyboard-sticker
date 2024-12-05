@@ -1,8 +1,8 @@
 "use client";
 import styled from "styled-components";
 import Sticker from "./Sticker";
-import { stickerLayouts } from "@/data/stickerLayout";
 import { useSelector } from "react-redux";
+import { stickerRegistry } from "@/data/stickerConfigs";
 
 const KeyContainer = styled.div`
   width: ${(props) => props.$width}px;
@@ -107,8 +107,14 @@ const Key = ({ keyData, style }) => {
     position,
   } = keyData;
 
-  // Debug log
-  console.log("Key render:", { keyData, label });
+  const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
+
+  console.log("Key render:", {
+    label,
+    keyData,
+    hasSticker:
+      !!stickerRegistry?.[selectedConfig]?.layout?.[label.toLowerCase()],
+  });
 
   if (spacer) {
     return <Spacer $width={width} $height={baseSize} />;

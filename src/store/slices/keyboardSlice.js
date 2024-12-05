@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { defaultConfig } from "@/data/stickerConfigs";
+import { defaultConfig } from "@/data/stickerConfigs/types";
 
 const initialState = {
   selectedOS: "mac",

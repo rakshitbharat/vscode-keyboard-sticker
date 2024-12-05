@@ -83,45 +83,51 @@ const Sticker = ({ keyData }) => {
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
 
-  // Debug logs
-  console.log("Sticker render:", {
+  // Comprehensive debug logging
+  console.log("Sticker Component:", {
     keyData,
     selectedOS,
     selectedConfig,
-    registryAvailable: !!stickerRegistry,
-    configs: Object.keys(stickerRegistry || {}),
+    stickerRegistry: {
+      available: !!stickerRegistry,
+      configs: Object.keys(stickerRegistry || {}),
+      selectedConfig: stickerRegistry?.[selectedConfig],
+      styles: stickerRegistry?.[selectedConfig]?.styles,
+      layout: stickerRegistry?.[selectedConfig]?.layout,
+    },
   });
 
   // Early return if any required data is missing
   if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
-    console.log("Missing required data:", {
-      label: keyData?.label,
-      selectedOS,
-      selectedConfig,
-      registryAvailable: !!stickerRegistry,
-    });
     return null;
   }
 
   // Get the key label and normalize it
   const keyLabel = keyData.label.toLowerCase();
+  const currentConfig = stickerRegistry[selectedConfig];
 
-  const config = stickerRegistry[selectedConfig]?.styles?.[selectedOS];
-  const layout = stickerRegistry[selectedConfig]?.layout;
+  if (!currentConfig) {
+    console.error("Selected config not found:", selectedConfig);
+    return null;
+  }
 
-  // Debug the matching process
-  console.log("Matching process:", {
-    keyLabel,
-    configAvailable: !!config,
-    layoutAvailable: !!layout,
-    layoutKeys: Object.keys(layout || {}),
-  });
+  const styles = currentConfig.styles?.[selectedOS];
+  const layout = currentConfig.layout;
+
+  if (!styles || !layout) {
+    console.error("Missing styles or layout for config:", {
+      config: selectedConfig,
+      hasStyles: !!styles,
+      hasLayout: !!layout,
+    });
+    return null;
+  }
 
   // Find matching sticker data
-  const stickerData = layout?.[keyLabel];
+  const stickerData = layout[keyLabel];
 
-  if (!config || !stickerData) {
-    console.log("No matching sticker data found");
+  if (!stickerData) {
+    // console.log("No sticker data for key:", keyLabel);
     return null;
   }
 
@@ -132,9 +138,9 @@ const Sticker = ({ keyData }) => {
       : null;
 
   return (
-    <StickerContainer $position={config.position}>
+    <StickerContainer $position={styles.position}>
       {texts.map((text, index) => (
-        <StickerItem key={index} $style={config.style}>
+        <StickerItem key={index} $style={styles.style}>
           {IconComponent && (
             <IconWrapper>
               <IconComponent />

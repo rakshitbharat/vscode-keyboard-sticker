@@ -1,15 +1,17 @@
 // Registry for all sticker configurations
 import vscodePurple from "./vscodePurple";
 import vscodeBlue from "./vscodeBlue";
+import { defaultConfig } from "./types";
 
-// Export as a named constant to ensure it's available immediately
-export const stickerRegistry = {
+// Initialize registry immediately
+const registry = {
   vscodePurple,
   vscodeBlue,
 };
 
-// Export default config
-export const defaultConfig = "vscodePurple";
+// Export as a frozen object to prevent modifications
+export const stickerRegistry = Object.freeze(registry);
+export { defaultConfig };
 
-// Export individual configs for direct access if needed
-export { vscodePurple, vscodeBlue };
+// Debug logs
+console.log("stickerRegistry initialized with configs:", Object.keys(registry));
