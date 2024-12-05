@@ -15,14 +15,14 @@ An interactive keyboard shortcut visualizer for Visual Studio Code, showing diff
 
 ## Demo
 
-Check out the live demo: [VSCode Keyboard Shortcuts Visualizer](https://your-username.github.io/vscode-keyboard-shortcuts)
+Check out the live demo: [VSCode Keyboard Shortcuts Visualizer](https://rakshitbharat.github.io/vscode-keyboard-shortcuts)
 
 ## Getting Started
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/vscode-keyboard-shortcuts.git
+git clone https://github.com/rakshitbharat/vscode-keyboard-shortcuts.git
 cd vscode-keyboard-shortcuts
 ```
 
@@ -93,8 +93,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you like this project, please consider giving it a ⭐️!
 
-## Author
-
-Your Name - [@your-twitter](https://twitter.com/your-twitter)
-
-Project Link: [https://github.com/your-username/vscode-keyboard-shortcuts](https://github.com/your-username/vscode-keyboard-shortcuts)
+Project Link: [https://github.com/rakshitbharat/vscode-keyboard-shortcuts](https://github.com/rakshitbharat/vscode-keyboard-shortcuts)

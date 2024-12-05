@@ -2,6 +2,11 @@
   "name": "vscode-keyboard-shortcuts",
   "private": true,
   "version": "0.0.0",
+  "author": "rakshitbharat",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rakshitbharat/vscode-keyboard-shortcuts.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
