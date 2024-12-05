@@ -32,7 +32,10 @@ jobs:
           NEXT_PUBLIC_BASE_PATH: /vscode-keyboard-sticker
 
       - name: Add .nojekyll file 📄
-        run: touch out/.nojekyll
+        run: |
+          touch out/.nojekyll
+          cp -r out/* out/
+          echo "vscode-keyboard-sticker.rakshitbharat.com" > out/CNAME
 
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@v4
