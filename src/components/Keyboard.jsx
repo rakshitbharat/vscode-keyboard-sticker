@@ -1,3 +1,4 @@
+"use client";
 import { Box } from "@mui/material";
 import Key from "./Key";
 import { keyboardLayout } from "../data/keyboardData";
