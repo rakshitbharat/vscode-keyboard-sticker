@@ -94,18 +94,6 @@ const Sticker = ({ keyData }) => {
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
 
-  // Debug logs
-  console.log("Sticker Component:", {
-    keyData,
-    selectedOS,
-    selectedConfig,
-    stickerRegistry: {
-      available: !!stickerRegistry,
-      configs: Object.keys(stickerRegistry),
-      currentConfig: stickerRegistry[selectedConfig],
-    },
-  });
-
   if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
     return null;
   }
@@ -120,13 +108,9 @@ const Sticker = ({ keyData }) => {
   const styles = currentConfig.styles?.[selectedOS];
   const layout = currentConfig.layout;
 
-  if (!styles || !layout) {
-    return null;
-  }
+  const stickerData = layout[selectedOS]?.[keyLabel] || layout[keyLabel];
 
-  const stickerData = layout[keyLabel];
-
-  if (!stickerData) {
+  if (!styles || !stickerData) {
     return null;
   }
 
