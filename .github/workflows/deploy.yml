@@ -14,22 +14,21 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      - name: Setup Node.js ⚙️
-        uses: actions/setup-node@v3
+      - name: Setup Bun ⚡
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: "18"
-          cache: "npm"
+          bun-version: latest
 
       - name: Install dependencies 📦
-        run: npm ci
+        run: bun install
 
       - name: Build 🔧
-        run: npm run build
+        run: bun run build
         env:
           NEXT_PUBLIC_BASE_PATH: /vscode-keyboard-shortcuts
 
       - name: Export static files 📁
-        run: npm run export
+        run: bun run export
 
       - name: Add .nojekyll file 📄
         run: touch out/.nojekyll
