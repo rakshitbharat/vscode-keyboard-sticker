@@ -15,15 +15,15 @@ An interactive keyboard sticker visualizer that displays VSCode shortcuts across
 
 ## Demo
 
-Check out the live demo: [VSCode Keyboard Stickers](https://rakshitbharat.github.io/vscode-keyboard-shortcuts)
+Check out the live demo: [VSCode Keyboard Stickers](https://rakshitbharat.github.io/vscode-keyboard-sticker)
 
 ## Getting Started
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/rakshitbharat/vscode-keyboard-shortcuts.git
-cd vscode-keyboard-shortcuts
+git clone https://github.com/rakshitbharat/vscode-keyboard-sticker.git
+cd vscode-keyboard-sticker
 ```
 
 2. Install dependencies:
@@ -93,4 +93,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you like this project, please consider giving it a ⭐️!
 
-Project Link: [https://github.com/rakshitbharat/vscode-keyboard-shortcuts](https://github.com/rakshitbharat/vscode-keyboard-shortcuts)
+Project Link: [https://github.com/rakshitbharat/vscode-keyboard-sticker](https://github.com/rakshitbharat/vscode-keyboard-sticker)
