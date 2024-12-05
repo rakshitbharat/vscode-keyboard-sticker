@@ -140,7 +140,10 @@ const Header = () => {
   console.log("stickerRegistry:", stickerRegistry);
   console.log("selectedConfig:", selectedConfig);
 
-  const configOptions = [{ id: "vscodePurple", label: "VSCode Purple" }];
+  const configOptions = [
+    { id: "vscodePurple", label: "VSCode Purple" },
+    { id: "vscodeBlue", label: "VSCode Blue" },
+  ];
 
   return (
     <HeaderContainer>
