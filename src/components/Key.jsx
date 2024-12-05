@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import Sticker from "./Sticker";
 import { useSelector } from "react-redux";
-import { stickerRegistry } from "@/data/stickerConfigs";
+import { useStickerRegistry } from "@/hooks/useStickerRegistry";
 
 const KeyContainer = styled.div`
   width: ${(props) => props.$width}px;
@@ -98,6 +98,9 @@ const Spacer = styled.div`
 `;
 
 const Key = ({ keyData, style }) => {
+  const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
+  const stickerRegistry = useStickerRegistry();
+
   const baseSize = 60;
   const {
     label = "",
@@ -106,8 +109,6 @@ const Key = ({ keyData, style }) => {
     spacer,
     position,
   } = keyData;
-
-  const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
 
   console.log("Key render:", {
     label,

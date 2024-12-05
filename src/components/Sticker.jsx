@@ -1,29 +1,32 @@
 import styled from "styled-components";
-import { stickerRegistry } from "@/data/stickerConfigs";
 import { useSelector } from "react-redux";
 import Image from "next/image";
+import { useStickerRegistry } from "@/hooks/useStickerRegistry";
 
 const StickerContainer = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   ${(props) => {
     switch (props.$position) {
       case "top-right":
         return `
-          top: 4px;
-          right: 4px;
+          top: 2px;
+          right: 2px;
+          max-width: calc(100% - 4px);
         `;
       case "top-left":
         return `
-          top: 4px;
-          left: 4px;
+          top: 2px;
+          left: 2px;
+          max-width: calc(100% - 4px);
         `;
       default:
         return `
-          top: 4px;
-          right: 4px;
+          top: 2px;
+          right: 2px;
+          max-width: calc(100% - 4px);
         `;
     }
   }}
@@ -34,14 +37,15 @@ const StickerItem = styled.div`
   ${(props) => ({ ...props.$style })}
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.65em;
-  padding: 2px 4px;
+  gap: 2px;
+  font-size: 0.6em;
+  padding: 1px 3px;
   border-radius: 3px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 100px;
+  max-width: 100%;
   overflow: hidden;
+  line-height: 1.2;
 `;
 
 const CopyIcon = () => (
@@ -71,43 +75,45 @@ const icons = {
 };
 
 const IconWrapper = styled.div`
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white; // Ensure icon color matches text
+  color: white;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const Sticker = ({ keyData }) => {
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
+  const stickerRegistry = useStickerRegistry();
 
-  // Comprehensive debug logging
+  // Debug logs
   console.log("Sticker Component:", {
     keyData,
     selectedOS,
     selectedConfig,
     stickerRegistry: {
       available: !!stickerRegistry,
-      configs: Object.keys(stickerRegistry || {}),
-      selectedConfig: stickerRegistry?.[selectedConfig],
-      styles: stickerRegistry?.[selectedConfig]?.styles,
-      layout: stickerRegistry?.[selectedConfig]?.layout,
+      configs: Object.keys(stickerRegistry),
+      currentConfig: stickerRegistry[selectedConfig],
     },
   });
 
-  // Early return if any required data is missing
   if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
     return null;
   }
 
-  // Get the key label and normalize it
   const keyLabel = keyData.label.toLowerCase();
   const currentConfig = stickerRegistry[selectedConfig];
 
   if (!currentConfig) {
-    console.error("Selected config not found:", selectedConfig);
     return null;
   }
 
@@ -115,19 +121,12 @@ const Sticker = ({ keyData }) => {
   const layout = currentConfig.layout;
 
   if (!styles || !layout) {
-    console.error("Missing styles or layout for config:", {
-      config: selectedConfig,
-      hasStyles: !!styles,
-      hasLayout: !!layout,
-    });
     return null;
   }
 
-  // Find matching sticker data
   const stickerData = layout[keyLabel];
 
   if (!stickerData) {
-    // console.log("No sticker data for key:", keyLabel);
     return null;
   }
 
@@ -136,6 +135,13 @@ const Sticker = ({ keyData }) => {
     !Array.isArray(stickerData) && stickerData.icon
       ? icons[stickerData.icon]
       : null;
+
+  const truncateText = (text) => {
+    if (text.length > 12) {
+      return text.slice(0, 10) + "...";
+    }
+    return text;
+  };
 
   return (
     <StickerContainer $position={styles.position}>
@@ -146,7 +152,7 @@ const Sticker = ({ keyData }) => {
               <IconComponent />
             </IconWrapper>
           )}
-          {text}
+          {truncateText(text)}
         </StickerItem>
       ))}
     </StickerContainer>
