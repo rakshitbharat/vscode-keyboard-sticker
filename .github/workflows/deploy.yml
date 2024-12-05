@@ -27,9 +27,6 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: /vscode-keyboard-shortcuts
 
-      - name: Export static files 📁
-        run: bun run export
-
       - name: Add .nojekyll file 📄
         run: touch out/.nojekyll
 
