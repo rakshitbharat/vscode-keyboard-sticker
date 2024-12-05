@@ -1,16 +1,20 @@
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedOS } from "@/store/slices/keyboardSlice";
+import { setSelectedOS, setShortcutType } from "@/store/slices/keyboardSlice";
+import { shortcutTypes } from "@/data/shortcutConfigs";
 
 const HeaderContainer = styled.div`
   text-align: center;
   margin-bottom: 2rem;
   color: #ffffff;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
 `;
 
 const Title = styled.h1`
   font-size: 3.5rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   background: ${(props) => props.theme.brand.gradient};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -21,15 +25,38 @@ const Title = styled.h1`
     sans-serif;
 `;
 
+const FilterSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+`;
+
 const FilterContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+`;
+
+const FilterGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+`;
+
+const FilterLabel = styled.div`
+  font-size: 0.9rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
 `;
 
 const FilterButton = styled.button`
   padding: 0.75rem 2rem;
+  min-width: 120px;
   border: 2px solid
     ${(props) => (props.$active ? props.theme.accent.primary : "#3d3d3d")};
   background: ${(props) =>
@@ -102,6 +129,7 @@ const ConfigKey = styled.span`
 const Header = () => {
   const dispatch = useDispatch();
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
+  const shortcutType = useSelector((state) => state.keyboard.shortcutType);
 
   const osOptions = [
     { id: "mac", label: "macOS" },
@@ -137,17 +165,38 @@ const Header = () => {
   return (
     <HeaderContainer>
       <Title>VSCode Keyboard Shortcuts</Title>
-      <FilterContainer>
-        {osOptions.map((os) => (
-          <FilterButton
-            key={os.id}
-            $active={selectedOS === os.id}
-            onClick={() => handleOSChange(os.id)}
-          >
-            {os.label}
-          </FilterButton>
-        ))}
-      </FilterContainer>
+      <FilterSection>
+        <FilterGroup>
+          <FilterLabel>Operating System</FilterLabel>
+          <FilterContainer>
+            {osOptions.map((os) => (
+              <FilterButton
+                key={os.id}
+                $active={selectedOS === os.id}
+                onClick={() => handleOSChange(os.id)}
+              >
+                {os.label}
+              </FilterButton>
+            ))}
+          </FilterContainer>
+        </FilterGroup>
+
+        <FilterGroup>
+          <FilterLabel>Shortcut Category</FilterLabel>
+          <FilterContainer>
+            {Object.entries(shortcutTypes).map(([key, value]) => (
+              <FilterButton
+                key={value}
+                $active={shortcutType === value}
+                onClick={() => dispatch(setShortcutType(value))}
+              >
+                {key.toLowerCase()}
+              </FilterButton>
+            ))}
+          </FilterContainer>
+        </FilterGroup>
+      </FilterSection>
+
       <ConfigContainer>
         {configurations[selectedOS].map((config, index) => (
           <ConfigItem key={index}>

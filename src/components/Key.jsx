@@ -1,5 +1,8 @@
 "use client";
 import styled from "styled-components";
+import Sticker from "./Sticker";
+import { stickerLayouts } from "@/data/stickerLayout";
+import { useSelector } from "react-redux";
 
 const KeyContainer = styled.div`
   width: ${(props) => props.$width}px;
@@ -95,14 +98,20 @@ const Spacer = styled.div`
 `;
 
 const Key = ({ keyData, style }) => {
-  const baseSize = 50;
+  const baseSize = 60;
   const {
-    label,
+    label = "",
     width = baseSize,
     height = baseSize,
     spacer,
     position,
   } = keyData;
+
+  const selectedOS = useSelector((state) => state.keyboard.selectedOS);
+  const stickerType = useSelector((state) => state.keyboard.stickerType);
+
+  // Get sticker content if this key should have a sticker
+  const stickerContent = stickerLayouts[stickerType]?.[label];
 
   if (spacer) {
     return <Spacer $width={width} $height={baseSize} />;
@@ -119,6 +128,7 @@ const Key = ({ keyData, style }) => {
       $zIndex={style?.zIndex}
     >
       {label}
+      {stickerContent && <Sticker shortcut={stickerContent} />}
     </KeyContainer>
   );
 };
