@@ -1,12 +1,12 @@
 {
-  "name": "vscode-keyboard-stickers",
+  "name": "vscode-keyboard-sticker",
   "description": "Interactive keyboard sticker visualizer for VSCode shortcuts",
   "private": true,
   "version": "0.0.0",
   "author": "rakshitbharat",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rakshitbharat/vscode-keyboard-shortcuts.git"
+    "url": "https://github.com/rakshitbharat/vscode-keyboard-sticker.git"
   },
   "scripts": {
     "dev": "next dev",
