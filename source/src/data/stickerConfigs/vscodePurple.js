@@ -58,9 +58,9 @@ export default {
           image: "/themes/vscodePurple/mac/circle-question.svg",
         },
         c: {
-          text: ["⌘ + C", "Copy"],
+          text: ["⌘ + C", "Copy Line"],
           icon: "copy",
-          image: "/themes/vscodePurple/mac/copy.svg",
+          image: "/themes/vscodePurple/mac/svg/copy.svg",
         },
         v: {
           text: ["⌘ + V", "Paste"],

@@ -194,13 +194,9 @@ const Sticker = ({ keyData }) => {
 
   // If it's an image sticker
   if (stickerData.image) {
-    console.log(`Loading sticker for ${keyData.label}:`, {
-      keyData,
-      stickerData,
-      image: stickerData.image,
-    });
+    const isSvg = stickerData.image.endsWith(".svg");
 
-    if (svgContent) {
+    if (isSvg && svgContent) {
       return (
         <StickerContainer>
           <StickerSVG dangerouslySetInnerHTML={{ __html: svgContent }} />
@@ -217,6 +213,9 @@ const Sticker = ({ keyData }) => {
             style={{
               pointerEvents: "none",
               userSelect: "none",
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
             }}
           />
         </StickerSVG>

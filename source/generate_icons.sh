@@ -1,34 +1,18 @@
 #!/bin/bash
 
+# Check for ImageMagick
+if ! command -v convert &> /dev/null; then
+    echo "ImageMagick is required. Please install it first:"
+    echo "Ubuntu/Debian: sudo apt-get install imagemagick"
+    echo "macOS: brew install imagemagick"
+    exit 1
+fi
+
 # Create base directories
-mkdir -p public/themes/vscodePurple/{mac,windows,ubuntu}
+mkdir -p public/themes/vscodePurple/{mac,windows,ubuntu}/{svg,png}
 
-# Function to create command key SVG
-create_command_svg() {
-    local os=$1
-    local color=""
-    
-    case $os in
-        "mac") color="rgb(156, 39, 176)";;      # Purple
-        "windows") color="rgb(68, 138, 255)";;   # Blue
-        "ubuntu") color="rgb(233, 84, 32)";;     # Orange
-    esac
-    
-    cat > "public/themes/vscodePurple/$os/command.svg" << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" style="background-color: ${color}; border-radius: 8px;">
-  <style>
-    .icon { fill: white; }
-  </style>
-  <rect width="100" height="100" rx="8" fill="${color}"/>
-  <path class="icon" d="M35 25 L65 25 L65 35 L75 35 L75 65 L65 65 L65 75 L35 75 L35 65 L25 65 L25 35 L35 35 Z"/>
-</svg>
-EOF
-}
-
-# Function to create a dummy SVG icon
-create_dummy_icon() {
+# Function to create both SVG and PNG icons
+create_icons() {
     local name=$1
     local os=$2
     local color=""
@@ -39,10 +23,11 @@ create_dummy_icon() {
         "ubuntu") color="rgb(233, 84, 32)";;     # Orange
     esac
     
-    cat > "public/themes/vscodePurple/$os/${name}.svg" << EOF
+    # Create SVG
+    cat > "public/themes/vscodePurple/$os/svg/${name}.svg" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" style="background-color: ${color}; border-radius: 8px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100">
   <style>
     .bg { fill: ${color}; }
     .icon { fill: white; }
@@ -61,7 +46,11 @@ create_dummy_icon() {
 </svg>
 EOF
 
-    echo "Created: public/themes/vscodePurple/$os/${name}.svg"
+    # Convert SVG to PNG
+    convert -background none -size 128x128 "public/themes/vscodePurple/$os/svg/${name}.svg" \
+        "public/themes/vscodePurple/$os/png/${name}.png"
+
+    echo "Created: ${name} (SVG + PNG) for ${os}"
 }
 
 # List of icons to create
@@ -89,17 +78,9 @@ ICONS=(
 # Create icons for each OS
 for os in mac windows ubuntu; do
     echo "Creating icons for $os..."
-    mkdir -p "public/themes/vscodePurple/$os"
-    create_command_svg "$os"
-    
     for icon_name in "${ICONS[@]}"; do
-        echo "  Creating $icon_name..."
-        create_dummy_icon "$icon_name" "$os"
+        create_icons "$icon_name" "$os"
     done
 done
 
-echo "Done! SVG icons have been created in public/themes/vscodePurple/"
-
-# List created files
-echo -e "\nCreated files:"
-find public/themes/vscodePurple -type f -name "*.svg" | sort
+echo "Done! Icons have been created in public/themes/vscodePurple/"

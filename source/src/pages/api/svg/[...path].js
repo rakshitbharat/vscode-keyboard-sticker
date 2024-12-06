@@ -1,16 +1,24 @@
-import { loadSvg } from "@/utils/loadSvg";
+import { loadImage } from "@/utils/loadImage";
 
 export default async function handler(req, res) {
   const { path } = req.query;
   const svgPath = Array.isArray(path) ? path.join("/") : path;
 
-  const content = await loadSvg(`/themes/${svgPath}`);
+  const { content, type } = await loadImage(`/themes/${svgPath}`);
 
   if (!content) {
-    return res.status(404).json({ error: "SVG not found" });
+    return res.status(404).json({ error: "Image not found" });
   }
 
-  res.setHeader("Content-Type", "image/svg+xml");
+  const contentType =
+    {
+      svg: "image/svg+xml",
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+    }[type] || "application/octet-stream";
+
+  res.setHeader("Content-Type", contentType);
   res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
   res.send(content);
 }
