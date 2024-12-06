@@ -1,15 +1,11 @@
 export const themes = {
   mac: {
-    background: `linear-gradient(135deg, #000000 0%, #1c1c1e 50%, #2c2c2e 100%)`,
-    keyboardBg: `linear-gradient(
-      145deg,
-      rgba(44, 44, 46, 0.95),
-      rgba(58, 58, 60, 0.85)
-    )`,
+    background: `white`,
+    keyboardBg: `white`,
     sectionBg: `linear-gradient(
       135deg,
-      rgba(28, 28, 30, 0.95),
-      rgba(44, 44, 46, 0.85)
+      rgba(218, 218, 220, 0.95),
+      rgba(195, 195, 197, 0.9)
     )`,
     accent: {
       primary: "#0A84FF",
@@ -21,16 +17,16 @@ export const themes = {
     },
   },
   windows: {
-    background: `linear-gradient(135deg, #0c1929 0%, #1a2332 50%, #2a3645 100%)`,
+    background: `linear-gradient(135deg, #003366 0%, #004080 25%, #0066CC 75%, #0080FF 100%)`,
     keyboardBg: `linear-gradient(
       145deg,
-      rgba(42, 54, 69, 0.95),
-      rgba(55, 71, 90, 0.85)
+      rgba(0, 77, 153, 0.95),
+      rgba(0, 102, 204, 0.9)
     )`,
     sectionBg: `linear-gradient(
       135deg,
-      rgba(26, 35, 50, 0.95),
-      rgba(42, 54, 69, 0.85)
+      rgba(0, 51, 102, 0.95),
+      rgba(0, 77, 153, 0.9)
     )`,
     accent: {
       primary: "#60CDFF",
@@ -38,7 +34,7 @@ export const themes = {
     },
     brand: {
       gradient: "linear-gradient(135deg, #60CDFF 0%, #4CC2FF 100%)",
-      shadow: "0 0 150px rgba(96, 205, 255, 0.15)",
+      shadow: "0 0 150px rgba(96, 205, 255, 0.3)",
     },
   },
   ubuntu: {

@@ -1,19 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 import keyboardReducer from "./slices/keyboardSlice";
-import { stickerRegistry } from "@/data/stickerConfigs";
-import { defaultConfig } from "@/data/stickerConfigs/types";
-
-const persistConfig = {
-  key: "root",
-  storage,
-  whitelist: ["keyboard"],
-};
+import { persistConfig } from "./persistConfig";
 
 const persistedReducer = persistReducer(persistConfig, keyboardReducer);
 
-// Create store with middleware to handle initialization
 export const store = configureStore({
   reducer: {
     keyboard: persistedReducer,
@@ -21,15 +21,9 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST"],
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
-});
-
-// Initialize store with default values if needed
-store.dispatch({
-  type: "keyboard/setSelectedConfig",
-  payload: defaultConfig,
 });
 
 export const persistor = persistStore(store);
