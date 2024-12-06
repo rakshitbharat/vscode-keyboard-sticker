@@ -8,6 +8,8 @@ import {
   getKeyboardLayout,
 } from "../data/keyboardData";
 import { useSelector } from "react-redux";
+import { useState } from "react";
+import KeyManagementPopup from "./KeyManagementPopup";
 
 const KeyboardContainer = styled.div`
   display: flex;
@@ -136,44 +138,75 @@ const Keyboard = () => {
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const keyboardLayout = getKeyboardLayout(selectedOS);
   const baseSize = 50;
+  const [selectedKey, setSelectedKey] = useState(null);
+
+  const handleKeyClick = (keyData) => {
+    setSelectedKey(keyData);
+  };
+
+  const handleSaveKey = (updatedKeyData) => {
+    // Handle saving the key data with custom sticker
+    setSelectedKey(null);
+  };
 
   return (
-    <KeyboardContainer>
-      <SectionsContainer>
-        {/* Main Keyboard Section */}
-        <Section>
-          {keyboardLayout.mainKeyboardLayout.map((row, rowIndex) => (
-            <Row key={rowIndex}>
-              {row.map((key, keyIndex) => (
-                <Key key={`${rowIndex}-${keyIndex}`} keyData={key} />
-              ))}
-            </Row>
-          ))}
-        </Section>
+    <>
+      <KeyboardContainer>
+        <SectionsContainer>
+          {/* Main Keyboard Section */}
+          <Section>
+            {keyboardLayout.mainKeyboardLayout.map((row, rowIndex) => (
+              <Row key={rowIndex}>
+                {row.map((key, keyIndex) => (
+                  <Key
+                    key={`${rowIndex}-${keyIndex}`}
+                    keyData={key}
+                    onClick={handleKeyClick}
+                  />
+                ))}
+              </Row>
+            ))}
+          </Section>
 
-        {/* Navigation Section */}
-        <Section>
-          {keyboardLayout.extendedKeyboardLayout.map((row, rowIndex) => (
-            <Row key={rowIndex}>
-              {row.map((key, keyIndex) => (
-                <Key key={`${rowIndex}-${keyIndex}`} keyData={key} />
-              ))}
-            </Row>
-          ))}
-        </Section>
+          {/* Navigation Section */}
+          <Section>
+            {keyboardLayout.extendedKeyboardLayout.map((row, rowIndex) => (
+              <Row key={rowIndex}>
+                {row.map((key, keyIndex) => (
+                  <Key
+                    key={`${rowIndex}-${keyIndex}`}
+                    keyData={key}
+                    onClick={handleKeyClick}
+                  />
+                ))}
+              </Row>
+            ))}
+          </Section>
 
-        {/* Numpad Section */}
-        <NumpadSection $baseSize={baseSize}>
-          {keyboardLayout.numpadLayout.map((row, rowIndex) => (
-            <Row key={rowIndex}>
-              {row.map((key, keyIndex) => (
-                <Key key={`${rowIndex}-${keyIndex}`} keyData={key} />
-              ))}
-            </Row>
-          ))}
-        </NumpadSection>
-      </SectionsContainer>
-    </KeyboardContainer>
+          {/* Numpad Section */}
+          <NumpadSection $baseSize={baseSize}>
+            {keyboardLayout.numpadLayout.map((row, rowIndex) => (
+              <Row key={rowIndex}>
+                {row.map((key, keyIndex) => (
+                  <Key
+                    key={`${rowIndex}-${keyIndex}`}
+                    keyData={key}
+                    onClick={handleKeyClick}
+                  />
+                ))}
+              </Row>
+            ))}
+          </NumpadSection>
+        </SectionsContainer>
+      </KeyboardContainer>
+      {selectedKey && (
+        <KeyManagementPopup
+          keyData={selectedKey}
+          onClose={() => setSelectedKey(null)}
+          onSave={handleSaveKey}
+        />
+      )}
+    </>
   );
 };
 

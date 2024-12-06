@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useStickerRegistry } from "@/hooks/useStickerRegistry";
 import dynamic from "next/dynamic";
 import { useState, useEffect, useMemo } from "react";
+import ImageEditorModal from "./ImageEditorModal";
 
 const StickerContainer = styled.div`
   position: absolute;
@@ -153,6 +154,8 @@ const Sticker = ({ keyData }) => {
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
+  const [showEditor, setShowEditor] = useState(false);
+  const [customImage, setCustomImage] = useState(null);
 
   // Get theme and sticker data
   const { theme, stickerData } = useMemo(() => {
@@ -237,19 +240,47 @@ const Sticker = ({ keyData }) => {
     return text;
   };
 
+  const handleSaveImage = (dataURL) => {
+    setCustomImage(dataURL);
+    setShowEditor(false);
+  };
+
   return (
-    <StickerContainer>
-      {texts.map((text, index) => (
-        <StickerItem key={index} $style={theme.styles[selectedOS].style}>
-          {Icon && (
-            <IconWrapper>
-              <Icon />
-            </IconWrapper>
-          )}
-          {truncateText(text)}
-        </StickerItem>
-      ))}
-    </StickerContainer>
+    <>
+      <StickerContainer onClick={() => setShowEditor(true)}>
+        {customImage ? (
+          <StickerSVG>
+            <img
+              src={customImage}
+              alt="Custom sticker"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+              }}
+            />
+          </StickerSVG>
+        ) : (
+          texts.map((text, index) => (
+            <StickerItem key={index} $style={theme.styles[selectedOS].style}>
+              {Icon && (
+                <IconWrapper>
+                  <Icon />
+                </IconWrapper>
+              )}
+              {truncateText(text)}
+            </StickerItem>
+          ))
+        )}
+      </StickerContainer>
+
+      {showEditor && (
+        <ImageEditorModal
+          onClose={() => setShowEditor(false)}
+          onSave={handleSaveImage}
+        />
+      )}
+    </>
   );
 };
 
