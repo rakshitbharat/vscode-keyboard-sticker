@@ -1,0 +1,6 @@
+<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" fill="rgb(68, 138, 255)" rx="8"/>
+  <text x="32" y="32" font-family="Arial" font-size="14" fill="white" text-anchor="middle" dominant-baseline="middle">
+    paste
+  </text>
+</svg>

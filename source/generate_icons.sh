@@ -3,11 +3,12 @@
 # Create base directories
 mkdir -p public/themes/vscodePurple/{mac,windows,ubuntu}
 
-# Function to create colored SVG icon
-create_icon() {
+# Function to create a dummy SVG icon
+create_dummy_icon() {
     local name=$1
     local os=$2
     local color=""
+    local text_color="white"
     
     case $os in
         "mac") color="rgb(156, 39, 176)";;      # Purple
@@ -15,46 +16,52 @@ create_icon() {
         "ubuntu") color="rgb(233, 84, 32)";;     # Orange
     esac
     
-    # Download Font Awesome icon
-    curl -L "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/${name}.svg" \
-        | sed "s/currentColor/${color}/g" \
-        > "public/themes/vscodePurple/$os/${name}.svg"
-    
-    # Convert to PNG
-    convert -background none \
-        -resize 64x64 \
-        "public/themes/vscodePurple/$os/${name}.svg" \
-        "public/themes/vscodePurple/$os/${name}.png"
-    
-    rm "public/themes/vscodePurple/$os/${name}.svg"
+    # Create a simple colored rectangle SVG with text
+    cat > "public/themes/vscodePurple/$os/${name}.svg" << EOF
+<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" fill="${color}" rx="8"/>
+  <text x="32" y="32" font-family="Arial" font-size="14" fill="${text_color}" text-anchor="middle" dominant-baseline="middle">
+    ${name}
+  </text>
+</svg>
+EOF
 }
 
 # List of icons to create
-declare -A ICONS=(
-    ["copy"]="copy"
-    ["paste"]="paste"
-    ["cut"]="cut"
-    ["undo"]="undo"
-    ["help"]="question-circle"
-    ["rename"]="edit"
-    ["find_next"]="search"
-    ["find_previous"]="search-minus"
-    ["debug"]="bug"
-    ["editor"]="edit"
-    ["terminal"]="terminal"
-    ["problems"]="exclamation-circle"
-    ["breakpoint"]="circle"
-    ["menu"]="bars"
-    ["fullscreen"]="expand"
-    ["developer_tools"]="code"
+ICONS=(
+    "copy"
+    "paste"
+    "scissors"
+    "rotate-left"
+    "circle-question"
+    "pen-to-square"
+    "magnifying-glass"
+    "bug"
+    "pen"
+    "terminal"
+    "triangle-exclamation"
+    "circle-dot"
+    "bars"
+    "expand"
+    "wrench"
+    "floppy-disk"
+    "folder-open"
+    "table-columns"
 )
 
 # Create icons for each OS
 for os in mac windows ubuntu; do
-    for icon_name in "${!ICONS[@]}"; do
-        echo "Creating $icon_name for $os..."
-        create_icon "${ICONS[$icon_name]}" "$os"
+    echo "Creating icons for $os..."
+    mkdir -p "public/themes/vscodePurple/$os"
+    
+    for icon_name in "${ICONS[@]}"; do
+        echo "  Creating $icon_name..."
+        create_dummy_icon "$icon_name" "$os"
     done
 done
 
-echo "Done! Icons have been created in public/themes/vscodePurple/"
+echo "Done! Dummy SVG icons have been created in public/themes/vscodePurple/"
+
+# List created files
+echo -e "\nCreated files:"
+find public/themes/vscodePurple -type f -name "*.svg" | sort

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import { useStickerRegistry } from "@/hooks/useStickerRegistry";
+import dynamic from "next/dynamic";
 
 const StickerContainer = styled.div`
   position: absolute;
@@ -139,6 +140,23 @@ const StickerSVG = styled.img`
   }
 `;
 
+const StickerComponent = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 const Sticker = ({ keyData }) => {
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
@@ -181,65 +199,97 @@ const Sticker = ({ keyData }) => {
     position: "top-right",
   };
 
-  if (stickerData.image) {
-    const isSvg = stickerData.image.endsWith(".svg");
+  if (stickerData) {
+    // Handle component sticker
+    if (stickerData.component) {
+      // If component is a string path, load it dynamically
+      if (typeof stickerData.component === "string") {
+        const DynamicComponent = dynamic(() => import(stickerData.component), {
+          loading: () => <div>Loading...</div>,
+        });
 
-    if (isSvg) {
+        return (
+          <StickerContainer $position={styles.position}>
+            <StickerComponent>
+              <DynamicComponent />
+            </StickerComponent>
+          </StickerContainer>
+        );
+      }
+
+      // If component is a React component, render it directly
+      const Component = stickerData.component;
       return (
         <StickerContainer $position={styles.position}>
-          <StickerSVG
+          <StickerComponent>
+            <Component />
+          </StickerComponent>
+        </StickerContainer>
+      );
+    }
+
+    // Handle image sticker
+    if (stickerData.image) {
+      const isSvg = stickerData.image.endsWith(".svg");
+
+      if (isSvg) {
+        return (
+          <StickerContainer $position={styles.position}>
+            <StickerSVG
+              src={stickerData.image}
+              alt={
+                Array.isArray(stickerData.text)
+                  ? stickerData.text[0]
+                  : stickerData.text
+              }
+            />
+          </StickerContainer>
+        );
+      }
+
+      return (
+        <StickerContainer $position={styles.position}>
+          <StickerImage
             src={stickerData.image}
             alt={
               Array.isArray(stickerData.text)
                 ? stickerData.text[0]
                 : stickerData.text
             }
+            width={64}
+            height={64}
           />
         </StickerContainer>
       );
     }
 
+    // Handle text and icon sticker
+    const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;
+    const iconName = !Array.isArray(stickerData) ? stickerData.icon : null;
+    const Icon = iconName ? icons[iconName] : null;
+
+    const truncateText = (text) => {
+      if (text.length > 12) {
+        return text.slice(0, 10) + "...";
+      }
+      return text;
+    };
+
     return (
       <StickerContainer $position={styles.position}>
-        <StickerImage
-          src={stickerData.image}
-          alt={
-            Array.isArray(stickerData.text)
-              ? stickerData.text[0]
-              : stickerData.text
-          }
-          width={64}
-          height={64}
-        />
+        {texts.map((text, index) => (
+          <StickerItem key={index} $style={styles.style}>
+            {Icon && (
+              <IconWrapper>
+                <Icon />
+              </IconWrapper>
+            )}
+            {truncateText(text)}
+          </StickerItem>
+        ))}
       </StickerContainer>
     );
   }
-
-  const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;
-  const iconName = !Array.isArray(stickerData) ? stickerData.icon : null;
-  const Icon = iconName ? icons[iconName] : null;
-
-  const truncateText = (text) => {
-    if (text.length > 12) {
-      return text.slice(0, 10) + "...";
-    }
-    return text;
-  };
-
-  return (
-    <StickerContainer $position={styles.position}>
-      {texts.map((text, index) => (
-        <StickerItem key={index} $style={styles.style}>
-          {Icon && (
-            <IconWrapper>
-              <Icon />
-            </IconWrapper>
-          )}
-          {truncateText(text)}
-        </StickerItem>
-      ))}
-    </StickerContainer>
-  );
 };
 
 export default Sticker;
