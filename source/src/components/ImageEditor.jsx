@@ -85,14 +85,17 @@ const ImageEditorComponent = ({ onSave, initialImage }) => {
 
         if (!containerRef.current) return;
 
-        // Create a default blank canvas
-        const defaultImage =
+        // Create a default blank canvas with size
+        const defaultImage = new Image();
+        defaultImage.src =
           "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+        defaultImage.width = 500;
+        defaultImage.height = 500;
 
         const editor = new ImageEditor(containerRef.current, {
           includeUI: {
             loadImage: {
-              path: initialImage || defaultImage,
+              path: initialImage || defaultImage.src,
               name: "image",
             },
             theme: myTheme,
@@ -121,18 +124,37 @@ const ImageEditorComponent = ({ onSave, initialImage }) => {
             rotatingPointOffset: 70,
           },
           usageStatistics: false,
+          canvas: {
+            width: 500,
+            height: 500,
+          },
         });
 
         setEditorInstance(editor);
 
-        // If there's an initial image, load it
+        // If there's an initial image, load it after a short delay
         if (initialImage) {
-          editor.loadImage(initialImage);
+          // Ensure the editor is fully initialized before loading the image
+          setTimeout(() => {
+            try {
+              editor.loadImage(initialImage).then(() => {
+                editor.clearUndoStack();
+              });
+            } catch (err) {
+              console.error("Error loading initial image:", err);
+            }
+          }, 100);
         }
 
         return () => {
-          editor.destroy();
-          setEditorInstance(null);
+          if (editor) {
+            try {
+              editor.destroy();
+              setEditorInstance(null);
+            } catch (err) {
+              console.error("Error destroying editor:", err);
+            }
+          }
         };
       } catch (error) {
         console.error("Error initializing editor:", error);
@@ -144,8 +166,12 @@ const ImageEditorComponent = ({ onSave, initialImage }) => {
 
   const handleSave = () => {
     if (!editorInstance) return;
-    const dataURL = editorInstance.toDataURL();
-    onSave?.(dataURL);
+    try {
+      const dataURL = editorInstance.toDataURL();
+      onSave?.(dataURL);
+    } catch (err) {
+      console.error("Error saving image:", err);
+    }
   };
 
   return (
