@@ -39,9 +39,15 @@ export default {
       position: "top-right",
     },
   },
-  layout: {
-    mac: {},
-    windows: {},
-    ubuntu: {},
+  osConfigs: {
+    mac: {
+      stickers: {},
+    },
+    windows: {
+      stickers: {},
+    },
+    ubuntu: {
+      stickers: {},
+    },
   },
 };

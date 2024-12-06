@@ -70,6 +70,20 @@ export default async function handler(req, res) {
         await fs.writeFile(indexPath, indexContent);
       }
 
+      console.log("Theme file created:", configPath);
+      console.log("Index file updated with:", exportStatement);
+
+      // Add verification
+      try {
+        const newThemeContent = await fs.readFile(configPath, "utf8");
+        console.log("New theme content:", newThemeContent);
+
+        const newIndexContent = await fs.readFile(indexPath, "utf8");
+        console.log("Updated index content:", newIndexContent);
+      } catch (error) {
+        console.error("Verification failed:", error);
+      }
+
       res.status(200).json({
         success: true,
         themeId: themeData.id,

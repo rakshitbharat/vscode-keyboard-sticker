@@ -109,38 +109,31 @@ const Sticker = ({ keyData }) => {
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
-  const customStickers = useSelector((state) => state.keyboard.customStickers);
 
   if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
     return null;
   }
 
-  const keyLabel = keyData.label.toLowerCase();
-  const currentConfig = stickerRegistry[selectedConfig];
+  const theme = stickerRegistry[selectedConfig];
+  if (!theme) return null;
 
-  if (!currentConfig) {
-    return null;
-  }
+  const stickerData =
+    theme.osConfigs?.[selectedOS]?.stickers?.[keyData.label.toLowerCase()];
+  if (!stickerData) return null;
 
-  const styles = currentConfig.styles?.[selectedOS];
-  const layout = currentConfig.layout;
-
-  const stickerData = layout[selectedOS]?.[keyLabel] || layout[keyLabel];
-
-  if (!styles || !stickerData) {
-    return null;
-  }
-
-  const customSticker = customStickers[keyData.label];
-  if (customSticker?.type === "image") {
-    return <StickerImage src={customSticker.url} alt={keyData.label} />;
-  }
+  const styles = theme.styles?.[selectedOS] || {
+    style: {
+      backgroundColor: "rgba(156, 39, 176, 0.9)",
+      color: "#FFFFFF",
+      fontSize: "0.6em",
+      padding: "1px 3px",
+      borderRadius: "3px",
+    },
+    position: "top-right",
+  };
 
   const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;
-  const IconComponent =
-    !Array.isArray(stickerData) && stickerData.icon
-      ? icons[stickerData.icon]
-      : null;
+  const icon = !Array.isArray(stickerData) ? stickerData.icon : null;
 
   const truncateText = (text) => {
     if (text.length > 12) {
@@ -153,9 +146,9 @@ const Sticker = ({ keyData }) => {
     <StickerContainer $position={styles.position}>
       {texts.map((text, index) => (
         <StickerItem key={index} $style={styles.style}>
-          {IconComponent && (
+          {icon && (
             <IconWrapper>
-              <IconComponent />
+              <IconComponent icon={icon} />
             </IconWrapper>
           )}
           {truncateText(text)}

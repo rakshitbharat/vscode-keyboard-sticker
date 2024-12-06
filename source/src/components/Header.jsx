@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -22,6 +22,8 @@ import AddIcon from "@mui/icons-material/Add";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedOS, setSelectedConfig } from "@/store/slices/keyboardSlice";
+import vscodePurple from "@/data/stickerConfigs/vscodePurple";
+import vscodeBlue from "@/data/stickerConfigs/vscodeBlue";
 
 // Styled components using MUI's styled
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -218,6 +220,10 @@ const Header = () => {
   });
   const [errors, setErrors] = useState({});
   const [showSuccess, setShowSuccess] = useState(false);
+  const [availableThemes, setAvailableThemes] = useState({
+    vscodePurple,
+    vscodeBlue,
+  });
 
   const osOptions = [
     { id: "mac", label: "macOS" },
@@ -225,10 +231,54 @@ const Header = () => {
     { id: "ubuntu", label: "Ubuntu" },
   ];
 
-  const configOptions = [
-    { id: "vscodePurple", label: "VSCode Purple" },
-    { id: "vscodeBlue", label: "VSCode Blue" },
-  ];
+  // Load themes dynamically
+  useEffect(() => {
+    const loadThemes = async () => {
+      try {
+        console.log("Fetching themes...");
+        const response = await fetch("/api/themes/list");
+        const data = await response.json();
+        console.log("Received themes data:", data);
+
+        if (data.themes) {
+          setAvailableThemes((prev) => {
+            const newThemes = {
+              ...prev,
+              ...data.themes,
+            };
+            console.log("Updated themes:", newThemes);
+            return newThemes;
+          });
+        }
+      } catch (error) {
+        console.error("Error loading themes:", error);
+      }
+    };
+
+    loadThemes();
+  }, []);
+
+  // Generate config options dynamically from available themes
+  const configOptions = useMemo(() => {
+    console.log("Generating config options from themes:", availableThemes);
+    const options = Object.entries(availableThemes)
+      .filter(([key]) => {
+        const isValid = key !== "defaultConfig" && key !== "types";
+        console.log(`Checking key ${key}:`, isValid);
+        return isValid;
+      })
+      .map(([key, theme]) => {
+        const option = {
+          id: key,
+          label: theme.name || key,
+        };
+        console.log(`Created option for ${key}:`, option);
+        return option;
+      });
+
+    console.log("Final config options:", options);
+    return options;
+  }, [availableThemes]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -273,7 +323,8 @@ const Header = () => {
         console.log("Theme created:", data);
         setShowCreateTheme(false);
         setShowSuccess(true);
-        // Reload after showing success message
+
+        // Force reload of the application to load new modules
         setTimeout(() => {
           window.location.reload();
         }, 3000);

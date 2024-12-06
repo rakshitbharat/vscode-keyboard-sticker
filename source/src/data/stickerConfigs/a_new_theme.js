@@ -1,13 +1,13 @@
 export default {
-  id: "vscodeBlue",
-  name: "VSCode Blue",
-  description: "Blue theme for VSCode keyboard stickers",
-  author: "Default",
+  id: "a_new_theme",
+  name: "11kjsdnv",
+  description: "kjnv",
+  author: "kjn",
   version: "1.0.0",
   styles: {
     mac: {
       style: {
-        backgroundColor: "rgba(0, 122, 204, 0.9)", // VSCode blue
+        backgroundColor: "rgba(156, 39, 176, 0.9)",
         color: "#FFFFFF",
         fontSize: "0.6em",
         padding: "1px 3px",
@@ -18,7 +18,7 @@ export default {
     },
     windows: {
       style: {
-        backgroundColor: "rgba(28, 146, 255, 0.9)", // Lighter blue for Windows
+        backgroundColor: "rgba(68, 138, 255, 0.9)",
         color: "#FFFFFF",
         fontSize: "0.6em",
         padding: "1px 3px",
@@ -29,7 +29,7 @@ export default {
     },
     ubuntu: {
       style: {
-        backgroundColor: "rgba(41, 128, 185, 0.9)", // Ubuntu-style blue
+        backgroundColor: "rgba(233, 84, 32, 0.9)",
         color: "#FFFFFF",
         fontSize: "0.6em",
         padding: "1px 3px",
@@ -62,6 +62,18 @@ export default {
         s: ["⌘ + S", "Save"],
         p: ["⌘ + P", "Quick Open"],
         b: ["⌘ + B", "Toggle Sidebar"],
+        f1: ["Help"],
+        f2: ["Rename Symbol"],
+        f3: ["Find Next"],
+        f4: ["Find Previous"],
+        f5: ["Start Debug"],
+        f6: ["Focus Editor"],
+        f7: ["Focus Terminal"],
+        f8: ["Focus Problems"],
+        f9: ["Toggle Breakpoint"],
+        f10: ["Show Menu Bar"],
+        f11: ["Full Screen"],
+        f12: ["Dev Tools"],
       },
     },
     windows: {
@@ -86,6 +98,18 @@ export default {
         s: ["Ctrl + S", "Save"],
         p: ["Ctrl + P", "Quick Open"],
         b: ["Ctrl + B", "Toggle Sidebar"],
+        f1: ["Help"],
+        f2: ["Rename Symbol"],
+        f3: ["Find Next"],
+        f4: ["Find Previous"],
+        f5: ["Start Debug"],
+        f6: ["Focus Editor"],
+        f7: ["Focus Terminal"],
+        f8: ["Focus Problems"],
+        f9: ["Toggle Breakpoint"],
+        f10: ["Show Menu Bar"],
+        f11: ["Full Screen"],
+        f12: ["Dev Tools"],
       },
     },
     ubuntu: {
@@ -110,20 +134,19 @@ export default {
         s: ["Ctrl + S", "Save"],
         p: ["Ctrl + P", "Quick Open"],
         b: ["Ctrl + B", "Toggle Sidebar"],
+        f1: ["Help"],
+        f2: ["Rename Symbol"],
+        f3: ["Find Next"],
+        f4: ["Find Previous"],
+        f5: ["Start Debug"],
+        f6: ["Focus Editor"],
+        f7: ["Focus Terminal"],
+        f8: ["Focus Problems"],
+        f9: ["Toggle Breakpoint"],
+        f10: ["Show Menu Bar"],
+        f11: ["Full Screen"],
+        f12: ["Dev Tools"],
       },
     },
-    // Common shortcuts for all OS
-    f1: ["Help"],
-    f2: ["Rename Symbol"],
-    f3: ["Find Next"],
-    f4: ["Find Previous"],
-    f5: ["Start Debug"],
-    f6: ["Focus Editor"],
-    f7: ["Focus Terminal"],
-    f8: ["Focus Problems"],
-    f9: ["Toggle Breakpoint"],
-    f10: ["Show Menu Bar"],
-    f11: ["Full Screen"],
-    f12: ["Dev Tools"],
   },
 };
