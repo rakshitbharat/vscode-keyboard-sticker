@@ -14,8 +14,11 @@ export default async function handler(req, res) {
       const { themeId } = req.query;
       const { os, keyName } = req.query;
 
+      const uploadDir = path.join(process.cwd(), "public/themes", themeId, os);
+      await fs.mkdir(uploadDir, { recursive: true });
+
       const form = formidable({
-        uploadDir: path.join(process.cwd(), "public/themes", themeId, os),
+        uploadDir,
         keepExtensions: true,
         filename: (name, ext) => `${keyName}${ext}`,
       });
@@ -36,7 +39,10 @@ export default async function handler(req, res) {
       });
     } catch (error) {
       console.error("Error uploading image:", error);
-      res.status(500).json({ error: "Failed to upload image" });
+      res.status(500).json({
+        error: "Failed to upload image",
+        details: error.message,
+      });
     }
   } else {
     res.status(405).json({ error: "Method not allowed" });

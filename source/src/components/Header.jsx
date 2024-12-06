@@ -117,7 +117,21 @@ public/themes/
   </Stack>
 );
 
-const CreateThemeContent = () => (
+const validateThemeName = (name) => {
+  const regex = /^[a-z0-9_]+$/;
+  if (!regex.test(name)) {
+    return "Theme name can only contain lowercase letters, numbers, and underscores";
+  }
+  if (name.length < 3) {
+    return "Theme name must be at least 3 characters long";
+  }
+  if (name.length > 30) {
+    return "Theme name must be less than 30 characters";
+  }
+  return "";
+};
+
+const CreateThemeContent = ({ formData, setFormData, errors }) => (
   <Stack spacing={3}>
     <Typography color="text.secondary" sx={{ mb: 2 }}>
       Create a new theme and start customizing your keyboard stickers. The theme
@@ -127,14 +141,26 @@ const CreateThemeContent = () => (
       label="Theme Name"
       fullWidth
       required
-      helperText="This will be used for file names and folder structure"
+      value={formData.name}
+      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+      error={!!errors.name}
+      helperText={
+        errors.name || "This will be used for file names (e.g., neon_cyberpunk)"
+      }
       placeholder="e.g., neon_cyberpunk"
     />
     <TextField
       label="Display Name"
       fullWidth
       required
-      helperText="How your theme will appear in the dropdown"
+      value={formData.displayName}
+      onChange={(e) =>
+        setFormData({ ...formData, displayName: e.target.value })
+      }
+      error={!!errors.displayName}
+      helperText={
+        errors.displayName || "How your theme will appear in the dropdown"
+      }
       placeholder="e.g., Neon Cyberpunk"
     />
     <TextField
@@ -142,14 +168,22 @@ const CreateThemeContent = () => (
       fullWidth
       multiline
       rows={2}
-      helperText="Brief description of your theme"
+      value={formData.description}
+      onChange={(e) =>
+        setFormData({ ...formData, description: e.target.value })
+      }
+      error={!!errors.description}
+      helperText={errors.description}
       placeholder="A cyberpunk theme with neon accents..."
     />
     <TextField
       label="Author"
       fullWidth
       required
-      helperText="Your name or username"
+      value={formData.author}
+      onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+      error={!!errors.author}
+      helperText={errors.author || "Your name or username"}
     />
     <Box sx={{ bgcolor: "grey.900", p: 2, borderRadius: 1 }}>
       <Typography variant="subtitle2" color="primary.light" gutterBottom>
@@ -176,11 +210,14 @@ const Header = () => {
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const [showContribute, setShowContribute] = useState(false);
   const [showCreateTheme, setShowCreateTheme] = useState(false);
-  const [newTheme, setNewTheme] = useState({
+  const [formData, setFormData] = useState({
     name: "",
+    displayName: "",
     description: "",
     author: "",
   });
+  const [errors, setErrors] = useState({});
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const osOptions = [
     { id: "mac", label: "macOS" },
@@ -193,11 +230,29 @@ const Header = () => {
     { id: "vscodeBlue", label: "VSCode Blue" },
   ];
 
+  const validateForm = () => {
+    const newErrors = {};
+    const nameError = validateThemeName(formData.name);
+    if (nameError) newErrors.name = nameError;
+    if (!formData.displayName)
+      newErrors.displayName = "Display name is required";
+    if (!formData.author) newErrors.author = "Author name is required";
+    return newErrors;
+  };
+
   const handleCreateTheme = async () => {
-    const themeId = `theme_${Date.now()}`;
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    const themeId = formData.name;
     const themeData = {
       id: themeId,
-      ...newTheme,
+      name: formData.displayName,
+      description: formData.description,
+      author: formData.author,
       version: "1.0.0",
       osConfigs: {
         mac: { stickers: {} },
@@ -214,11 +269,21 @@ const Header = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        console.log("Theme created:", data);
         setShowCreateTheme(false);
-        console.log("Theme created successfully");
+        setShowSuccess(true);
+        // Reload after showing success message
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      } else {
+        const error = await response.json();
+        setErrors({ submit: error.error || "Failed to create theme" });
       }
     } catch (error) {
       console.error("Error creating theme:", error);
+      setErrors({ submit: "Failed to create theme. Please try again." });
     }
   };
 
@@ -339,18 +404,65 @@ const Header = () => {
           </Typography>
         </DialogTitle>
         <DialogContent>
-          <CreateThemeContent />
+          <CreateThemeContent
+            formData={formData}
+            setFormData={setFormData}
+            errors={errors}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowCreateTheme(false)}>Cancel</Button>
           <Button
             variant="contained"
             onClick={handleCreateTheme}
-            disabled={!newTheme.name || !newTheme.author}
+            disabled={!formData.name || !formData.author}
           >
             Create Theme
           </Button>
         </DialogActions>
+      </Dialog>
+
+      {/* Success Dialog */}
+      <Dialog
+        open={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Typography variant="h5" fontWeight="bold" color="success.main">
+            Theme Created Successfully!
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={2}>
+            <Typography>
+              Your theme has been created successfully. You can find the files
+              at:
+            </Typography>
+            <Box
+              component="pre"
+              sx={{
+                bgcolor: "grey.900",
+                color: "white",
+                p: 2,
+                borderRadius: 1,
+              }}
+            >
+              {`src/data/stickerConfigs/${formData.name}.js`}
+            </Box>
+            <Typography>To start customizing your theme:</Typography>
+            <ol>
+              <li>Open the theme file in your editor</li>
+              <li>Modify the styles for each OS</li>
+              <li>Add sticker images to the public folder</li>
+              <li>Test your changes in the preview</li>
+            </ol>
+            <Typography color="primary">
+              The page will reload in a moment to load your new theme...
+            </Typography>
+          </Stack>
+        </DialogContent>
       </Dialog>
     </>
   );
