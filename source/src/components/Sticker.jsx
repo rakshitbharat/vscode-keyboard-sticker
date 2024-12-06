@@ -123,19 +123,37 @@ const StickerImage = styled(Image)`
   }
 `;
 
-const StickerSVG = styled.img`
+const StickerSVG = styled.div`
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: inherit;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
   opacity: 0.9;
   transition: opacity 0.2s;
+  background-color: ${(props) => props.$color || "rgba(0, 0, 0, 0.1)"};
+  padding: 2px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8em;
+  text-align: center;
+  line-height: 1.2;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 
   &:hover {
     opacity: 1;
+    transform: scale(1.1);
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -170,7 +188,6 @@ const Sticker = ({ keyData }) => {
 
   const stickerData =
     theme.osConfigs?.[selectedOS]?.stickers?.[keyData.label.toLowerCase()];
-  console.log("Sticker data for", keyData.label, ":", stickerData);
 
   if (!stickerData) return null;
 
@@ -187,16 +204,39 @@ const Sticker = ({ keyData }) => {
 
   // If it's an image sticker
   if (stickerData.image) {
-    console.log("Loading image:", stickerData.image);
+    const color = styles.style.backgroundColor;
+    const text = Array.isArray(stickerData.text)
+      ? stickerData.text[0]
+      : stickerData.text || keyData.label;
+
     return (
       <StickerContainer $position={styles.position}>
         <StickerSVG
-          src={stickerData.image}
-          alt={
-            Array.isArray(stickerData.text)
-              ? stickerData.text[0]
-              : stickerData.text || ""
-          }
+          $color={color}
+          dangerouslySetInnerHTML={{
+            __html: `
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:${color};stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:${color};stop-opacity:0.8"/>
+                  </linearGradient>
+                </defs>
+                <rect width="64" height="64" rx="8" fill="url(#grad)"/>
+                <text 
+                  x="32" 
+                  y="36" 
+                  font-family="Arial" 
+                  font-size="20" 
+                  fill="white" 
+                  text-anchor="middle"
+                  font-weight="bold"
+                >
+                  ${text.charAt(0).toUpperCase()}
+                </text>
+              </svg>
+            `,
+          }}
         />
       </StickerContainer>
     );
