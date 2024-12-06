@@ -57,14 +57,15 @@ const ImageEditor = ({ onSave, initialImage }) => {
   const [activeObject, setActiveObject] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const fileInputRef = useRef(null);
+  const [fabricInstance, setFabricInstance] = useState(null);
 
   // Load Fabric.js
   useEffect(() => {
     const loadFabric = async () => {
       try {
-        // Dynamic import of fabric
         const fabricModule = await import("fabric");
         fabric = fabricModule.fabric;
+        setFabricInstance(fabric);
         setIsLoading(false);
       } catch (error) {
         console.error("Failed to load Fabric.js:", error);
@@ -76,42 +77,38 @@ const ImageEditor = ({ onSave, initialImage }) => {
 
   // Initialize canvas after Fabric is loaded
   useEffect(() => {
-    if (isLoading || !fabric || !canvasRef.current) return;
+    if (isLoading || !fabricInstance || !canvasRef.current) return;
 
-    try {
-      const canvas = new fabric.Canvas(canvasRef.current, {
-        width: 400,
-        height: 400,
-        backgroundColor: "#9c27b0",
+    const canvas = new fabricInstance.Canvas(canvasRef.current, {
+      width: 400,
+      height: 400,
+      backgroundColor: "#9c27b0",
+    });
+
+    editorRef.current = canvas;
+
+    // Load initial image if provided
+    if (initialImage) {
+      fabricInstance.Image.fromURL(initialImage, (img) => {
+        img.scaleToWidth(canvas.width);
+        canvas.add(img);
+        canvas.centerObject(img);
+        canvas.renderAll();
       });
-
-      editorRef.current = canvas;
-
-      // Load initial image if provided
-      if (initialImage) {
-        fabric.Image.fromURL(initialImage, (img) => {
-          img.scaleToWidth(canvas.width);
-          canvas.add(img);
-          canvas.centerObject(img);
-          canvas.renderAll();
-        });
-      }
-
-      // Add event listeners
-      canvas.on("selection:created", (e) => setActiveObject(e.target));
-      canvas.on("selection:cleared", () => setActiveObject(null));
-
-      return () => {
-        canvas.dispose();
-      };
-    } catch (error) {
-      console.error("Failed to initialize canvas:", error);
     }
-  }, [isLoading, initialImage]);
+
+    // Add event listeners
+    canvas.on("selection:created", (e) => setActiveObject(e.target));
+    canvas.on("selection:cleared", () => setActiveObject(null));
+
+    return () => {
+      canvas.dispose();
+    };
+  }, [isLoading, initialImage, fabricInstance]);
 
   const addText = () => {
-    if (!fabric || !editorRef.current) return;
-    const text = new fabric.IText("Edit me", {
+    if (!fabricInstance || !editorRef.current) return;
+    const text = new fabricInstance.IText("Edit me", {
       left: 100,
       top: 100,
       fill: "white",
@@ -122,11 +119,11 @@ const ImageEditor = ({ onSave, initialImage }) => {
   };
 
   const addShape = (type) => {
-    if (!fabric || !editorRef.current) return;
+    if (!fabricInstance || !editorRef.current) return;
     let shape;
     switch (type) {
       case "circle":
-        shape = new fabric.Circle({
+        shape = new fabricInstance.Circle({
           radius: 30,
           fill: "white",
           left: 100,
@@ -134,7 +131,7 @@ const ImageEditor = ({ onSave, initialImage }) => {
         });
         break;
       case "rect":
-        shape = new fabric.Rect({
+        shape = new fabricInstance.Rect({
           width: 60,
           height: 60,
           fill: "white",
@@ -178,19 +175,37 @@ const ImageEditor = ({ onSave, initialImage }) => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
-    if (!file || !editorRef.current) return;
+    if (!file || !editorRef.current || !fabricInstance) return;
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      fabric.Image.fromURL(event.target?.result, (img) => {
-        img.scaleToWidth(editorRef.current.width);
+      const result = event.target?.result;
+      if (!result) return;
+
+      fabricInstance.Image.fromURL(result, (img) => {
+        // Calculate scale to fit the canvas while maintaining aspect ratio
+        const scale = Math.min(
+          (editorRef.current.width * 0.8) / img.width,
+          (editorRef.current.height * 0.8) / img.height
+        );
+
+        img.scale(scale);
+
+        // Center the image
+        img.set({
+          left: (editorRef.current.width - img.width * scale) / 2,
+          top: (editorRef.current.height - img.height * scale) / 2,
+        });
+
         editorRef.current.add(img);
-        editorRef.current.centerObject(img);
         editorRef.current.setActiveObject(img);
         editorRef.current.renderAll();
       });
     };
     reader.readAsDataURL(file);
+
+    // Reset the input so the same file can be selected again
+    e.target.value = "";
   };
 
   if (isLoading) {
