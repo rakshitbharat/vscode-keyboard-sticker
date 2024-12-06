@@ -6,32 +6,17 @@ import dynamic from "next/dynamic";
 
 const StickerContainer = styled.div`
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  ${(props) => {
-    switch (props.$position) {
-      case "top-right":
-        return `
-          top: 2px;
-          right: 2px;
-          max-width: calc(100% - 4px);
-        `;
-      case "top-left":
-        return `
-          top: 2px;
-          left: 2px;
-          max-width: calc(100% - 4px);
-        `;
-      default:
-        return `
-          top: 2px;
-          right: 2px;
-          max-width: calc(100% - 4px);
-        `;
-    }
-  }}
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: ${(props) => props.$color || "transparent"};
 `;
 
 const StickerItem = styled.div`
@@ -124,18 +109,13 @@ const StickerImage = styled(Image)`
 `;
 
 const StickerSVG = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 8px;
+  margin: 0;
   opacity: 0.9;
   transition: all 0.2s ease;
-  background-color: ${(props) => props.$color || "rgba(0, 0, 0, 0.1)"};
-  z-index: 10;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,18 +124,14 @@ const StickerSVG = styled.div`
   text-align: center;
   line-height: 1.2;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
   &:hover {
     opacity: 1;
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
 
   svg {
     width: 100%;
     height: 100%;
-    object-fit: cover;
   }
 `;
 
@@ -212,12 +188,11 @@ const Sticker = ({ keyData }) => {
       : stickerData.text || keyData.label;
 
     return (
-      <StickerContainer $position={styles.position}>
+      <StickerContainer $color={color}>
         <StickerSVG
-          $color={color}
           dangerouslySetInnerHTML={{
             __html: `
-              <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="grad_${
                     keyData.label
@@ -225,30 +200,22 @@ const Sticker = ({ keyData }) => {
                     <stop offset="0%" style="stop-color:${color};stop-opacity:0.95"/>
                     <stop offset="100%" style="stop-color:${color};stop-opacity:0.85"/>
                   </linearGradient>
-                  <filter id="shadow_${keyData.label}">
-                    <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.3"/>
-                  </filter>
                 </defs>
-                <rect width="100" height="100" rx="12" fill="url(#grad_${
-                  keyData.label
-                })" filter="url(#shadow_${keyData.label})"/>
-                <g transform="translate(50,50)" text-anchor="middle" dominant-baseline="middle">
-                  <text 
-                    y="-10"
-                    font-family="Arial, sans-serif" 
-                    font-size="24" 
-                    font-weight="bold" 
-                    fill="white"
-                    filter="url(#shadow_${keyData.label})"
-                  >${text.charAt(0).toUpperCase()}</text>
-                  <text 
-                    y="15"
-                    font-family="Arial, sans-serif" 
-                    font-size="14" 
-                    fill="white"
-                    opacity="0.9"
-                  >${text.slice(1)}</text>
-                </g>
+                <rect 
+                  width="100" 
+                  height="100" 
+                  fill="url(#grad_${keyData.label})"
+                />
+                <text 
+                  x="50" 
+                  y="50" 
+                  font-family="Arial, sans-serif" 
+                  font-size="40" 
+                  fill="white" 
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                  font-weight="bold"
+                >${text.charAt(0).toUpperCase()}</text>
               </svg>
             `,
           }}
@@ -272,7 +239,7 @@ const Sticker = ({ keyData }) => {
   };
 
   return (
-    <StickerContainer $position={styles.position}>
+    <StickerContainer>
       {texts.map((text, index) => (
         <StickerItem key={index} $style={styles.style}>
           {Icon && (
