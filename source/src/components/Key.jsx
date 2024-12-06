@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Sticker from "./Sticker";
 import { useSelector } from "react-redux";
 import { useStickerRegistry } from "@/hooks/useStickerRegistry";
+import { useState } from "react";
+import KeyManagementPopup from "./KeyManagementPopup";
 
 const KeyContainer = styled.div`
   width: ${(props) => props.$width}px;
@@ -97,7 +99,7 @@ const Spacer = styled.div`
   height: ${(props) => props.$height}px;
 `;
 
-const Key = ({ keyData, style }) => {
+const Key = ({ keyData, onClick, style }) => {
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
 
@@ -110,12 +112,12 @@ const Key = ({ keyData, style }) => {
     position,
   } = keyData;
 
-  console.log("Key render:", {
-    label,
-    keyData,
-    hasSticker:
-      !!stickerRegistry?.[selectedConfig]?.layout?.[label.toLowerCase()],
-  });
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (typeof onClick === "function") {
+      onClick(keyData);
+    }
+  };
 
   if (spacer) {
     return <Spacer $width={width} $height={baseSize} />;
@@ -123,6 +125,7 @@ const Key = ({ keyData, style }) => {
 
   return (
     <KeyContainer
+      onClick={handleClick}
       $width={width}
       $height={height}
       $label={label}

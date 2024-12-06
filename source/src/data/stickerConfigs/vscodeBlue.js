@@ -1,8 +1,8 @@
 export default {
   id: "vscodeBlue",
-  name: "Blue Stickers",
-  description: "Modern VSCode theme with blue sticker accents",
-  author: "Your Name",
+  name: "VSCode Blue",
+  description: "Blue theme for VSCode keyboard stickers",
+  author: "Default",
   version: "1.0.0",
   styles: {
     mac: {
@@ -39,72 +39,78 @@ export default {
       position: "top-right",
     },
   },
-  layout: {
+  osConfigs: {
     mac: {
-      c: {
-        text: ["⌘ + C", "Copy Line"],
-        icon: "copy",
+      stickers: {
+        c: {
+          text: ["⌘ + C", "Copy Line"],
+          icon: "copy",
+        },
+        v: {
+          text: ["⌘ + V", "Paste Line"],
+          icon: "paste",
+        },
+        x: {
+          text: ["⌘ + X", "Cut Line"],
+          icon: "cut",
+        },
+        z: {
+          text: ["⌘ + Z", "Undo"],
+          icon: "undo",
+        },
+        f: ["⌘ + F", "Find"],
+        s: ["⌘ + S", "Save"],
+        p: ["⌘ + P", "Quick Open"],
+        b: ["⌘ + B", "Toggle Sidebar"],
       },
-      v: {
-        text: ["⌘ + V", "Paste Line"],
-        icon: "paste",
-      },
-      x: {
-        text: ["⌘ + X", "Cut Line"],
-        icon: "cut",
-      },
-      z: {
-        text: ["⌘ + Z", "Undo"],
-        icon: "undo",
-      },
-      f: ["⌘ + F", "Find"],
-      s: ["⌘ + S", "Save"],
-      p: ["⌘ + P", "Quick Open"],
-      b: ["⌘ + B", "Toggle Sidebar"],
     },
     windows: {
-      c: {
-        text: ["Ctrl + C", "Copy Line"],
-        icon: "copy",
+      stickers: {
+        c: {
+          text: ["Ctrl + C", "Copy Line"],
+          icon: "copy",
+        },
+        v: {
+          text: ["Ctrl + V", "Paste Line"],
+          icon: "paste",
+        },
+        x: {
+          text: ["Ctrl + X", "Cut Line"],
+          icon: "cut",
+        },
+        z: {
+          text: ["Ctrl + Z", "Undo"],
+          icon: "undo",
+        },
+        f: ["Ctrl + F", "Find"],
+        s: ["Ctrl + S", "Save"],
+        p: ["Ctrl + P", "Quick Open"],
+        b: ["Ctrl + B", "Toggle Sidebar"],
       },
-      v: {
-        text: ["Ctrl + V", "Paste Line"],
-        icon: "paste",
-      },
-      x: {
-        text: ["Ctrl + X", "Cut Line"],
-        icon: "cut",
-      },
-      z: {
-        text: ["Ctrl + Z", "Undo"],
-        icon: "undo",
-      },
-      f: ["Ctrl + F", "Find"],
-      s: ["Ctrl + S", "Save"],
-      p: ["Ctrl + P", "Quick Open"],
-      b: ["Ctrl + B", "Toggle Sidebar"],
     },
     ubuntu: {
-      c: {
-        text: ["Ctrl + C", "Copy Line"],
-        icon: "copy",
+      stickers: {
+        c: {
+          text: ["Ctrl + C", "Copy Line"],
+          icon: "copy",
+        },
+        v: {
+          text: ["Ctrl + V", "Paste Line"],
+          icon: "paste",
+        },
+        x: {
+          text: ["Ctrl + X", "Cut Line"],
+          icon: "cut",
+        },
+        z: {
+          text: ["Ctrl + Z", "Undo"],
+          icon: "undo",
+        },
+        f: ["Ctrl + F", "Find"],
+        s: ["Ctrl + S", "Save"],
+        p: ["Ctrl + P", "Quick Open"],
+        b: ["Ctrl + B", "Toggle Sidebar"],
       },
-      v: {
-        text: ["Ctrl + V", "Paste Line"],
-        icon: "paste",
-      },
-      x: {
-        text: ["Ctrl + X", "Cut Line"],
-        icon: "cut",
-      },
-      z: {
-        text: ["Ctrl + Z", "Undo"],
-        icon: "undo",
-      },
-      f: ["Ctrl + F", "Find"],
-      s: ["Ctrl + S", "Save"],
-      p: ["Ctrl + P", "Quick Open"],
-      b: ["Ctrl + B", "Toggle Sidebar"],
     },
     // Common shortcuts for all OS
     f1: ["Help"],

@@ -1,16 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: "standalone",
   compiler: {
     styledComponents: true,
   },
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
-  output: "export",
-  images: {
-    unoptimized: true,
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ["@svgr/webpack"],
+    });
+    return config;
   },
-  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || "",
-  trailingSlash: true,
 };
 
 module.exports = nextConfig;

@@ -1,313 +1,229 @@
-import styled, { keyframes } from "styled-components";
+import { useState, useMemo, useEffect } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  Box,
+  Fab,
+  alpha,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Stack,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import AddIcon from "@mui/icons-material/Add";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedOS, setSelectedConfig } from "@/store/slices/keyboardSlice";
-import { stickerRegistry } from "@/data/stickerConfigs";
-import { motion, AnimatePresence } from "framer-motion";
-import { useSpring, animated } from "@react-spring/web";
-import Lottie from "lottie-react";
+import vscodePurple from "@/data/stickerConfigs/vscodePurple";
+import vscodeBlue from "@/data/stickerConfigs/vscodeBlue";
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+// Styled components using MUI's styled
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  background: "transparent",
+  boxShadow: "none",
+  position: "static",
+  padding: "1rem 0",
+}));
+
+const StyledToolbar = styled(Toolbar)({
+  maxWidth: 1200,
+  width: "100%",
+  margin: "0 auto",
+  display: "flex",
+  justifyContent: "space-between",
+  padding: "0 24px",
+});
+
+const StyledSelect = styled(Select)(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.background.paper, 0.8),
+  backdropFilter: "blur(10px)",
+  borderRadius: 8,
+  minWidth: 150,
+  "& .MuiSelect-select": {
+    padding: "10px 15px",
+  },
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.background.paper, 0.95),
+  },
+}));
+
+const FloatingButtons = styled(Box)({
+  position: "fixed",
+  bottom: "2rem",
+  right: "2rem",
+  display: "flex",
+  flexDirection: "column",
+  gap: "1rem",
+  zIndex: 1000,
+});
+
+const ContributeContent = () => (
+  <Stack spacing={3}>
+    <Typography variant="h6" color="primary">
+      Theme File Structure
+    </Typography>
+    <Typography>
+      When you create a theme, the following structure is automatically
+      generated:
+    </Typography>
+    <Box
+      component="pre"
+      sx={{
+        bgcolor: "grey.900",
+        color: "white",
+        p: 2,
+        borderRadius: 1,
+        overflow: "auto",
+      }}
+    >
+      {`src/data/stickerConfigs/
+├── your_theme_name.js    # Auto-generated theme config
+└── index.js             # Auto-updated with your theme
+
+public/themes/
+└── your_theme_name/     # Theme images folder
+    ├── mac/            # macOS specific stickers
+    ├── windows/        # Windows specific stickers
+    └── ubuntu/         # Ubuntu specific stickers`}
+    </Box>
+    <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
+      How It Works
+    </Typography>
+    <Box component="ol" sx={{ pl: 2 }}>
+      <li>Create a new theme using the "Create Theme" button</li>
+      <li>Theme configuration file is automatically generated</li>
+      <li>Upload sticker images for each key</li>
+      <li>Images are stored in the public folder by OS</li>
+      <li>Theme is automatically registered and ready to use</li>
+    </Box>
+    <Typography variant="h6" color="primary">
+      Contributing Back
+    </Typography>
+    <Typography>
+      After creating your theme, you can contribute it back to the project:
+    </Typography>
+    <Box component="ol" sx={{ pl: 2 }}>
+      <li>Your theme files are already in the correct structure</li>
+      <li>Create a fork of the repository</li>
+      <li>Copy your theme files to your fork</li>
+      <li>Create a pull request</li>
+    </Box>
+  </Stack>
+);
+
+const validateThemeName = (name) => {
+  const regex = /^[a-z0-9_]+$/;
+  if (!regex.test(name)) {
+    return "Theme name can only contain lowercase letters, numbers, and underscores";
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  if (name.length < 3) {
+    return "Theme name must be at least 3 characters long";
   }
-`;
-
-const scaleIn = keyframes`
-  from {
-    opacity: 0;
-    transform: scale(0.95);
+  if (name.length > 30) {
+    return "Theme name must be less than 30 characters";
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-`;
-
-const slideIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-`;
-
-const HeaderContainer = styled.div`
-  text-align: center;
-  margin-bottom: 2rem;
-  color: ${(props) =>
-    props.theme.background.includes("#FFFFFF") ? "#333333" : "#FFFFFF"};
-  max-width: 1200px;
-  margin: 0 auto 2rem;
-  padding: 0 1rem;
-  animation: ${fadeIn} 0.6s ease-out;
-`;
-
-const Title = motion(styled.h1`
-  font-size: 3.5rem;
-  margin-bottom: 3rem;
-  background: ${(props) => props.theme.brand.gradient};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  font-weight: 800;
-  letter-spacing: -1.5px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter",
-    sans-serif;
-  animation: ${scaleIn} 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-`);
-
-const FilterSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
-  animation: ${fadeIn} 0.8s ease-out forwards;
-  animation-delay: 0.2s;
-  opacity: 0;
-`;
-
-const FilterContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-
-  & > * {
-    animation: ${slideIn} 0.5s ease-out forwards;
-    opacity: 0;
-  }
-
-  & > *:nth-child(1) {
-    animation-delay: 0.3s;
-  }
-  & > *:nth-child(2) {
-    animation-delay: 0.4s;
-  }
-  & > *:nth-child(3) {
-    animation-delay: 0.5s;
-  }
-`;
-
-const FilterGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  align-items: center;
-`;
-
-const FilterLabel = styled.div`
-  font-size: 0.9rem;
-  color: ${(props) =>
-    props.theme.background.includes("#FFFFFF") ? "#666666" : "#888888"};
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.5rem;
-`;
-
-const FilterButton = motion(styled(animated.button)`
-  padding: 0.75rem 2rem;
-  min-width: 120px;
-  border: ${(props) =>
-    props.theme.background.includes("white")
-      ? props.$active
-        ? "none"
-        : "1px solid #E5E5E7"
-      : `2px solid ${props.$active ? props.theme.accent.primary : "#3d3d3d"}`};
-  background: ${(props) =>
-    props.theme.background.includes("white")
-      ? props.$active
-        ? props.theme.accent.primary
-        : "#F5F5F7"
-      : props.$active
-      ? `linear-gradient(135deg, 
-          ${props.theme.accent.primary}26, 
-          ${props.theme.accent.secondary}26)`
-      : "transparent"};
-  color: ${(props) =>
-    props.theme.background.includes("white")
-      ? props.$active
-        ? "#FFFFFF"
-        : "#666666"
-      : props.$active
-      ? props.theme.accent.primary
-      : "#FFFFFF"};
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  font-size: 1rem;
-  font-weight: ${(props) =>
-    props.theme.background.includes("white") ? "500" : "400"};
-  text-shadow: none;
-  box-shadow: ${(props) =>
-    props.theme.background.includes("white")
-      ? props.$active
-        ? "0 2px 4px rgba(0, 0, 0, 0.1)"
-        : "0 1px 2px rgba(0, 0, 0, 0.05)"
-      : "0 4px 6px rgba(0, 0, 0, 0.1)"};
-
-  &:hover {
-    border-color: ${(props) =>
-      props.theme.background.includes("white")
-        ? "#D1D1D3"
-        : props.theme.accent.primary};
-    background: ${(props) =>
-      props.theme.background.includes("white")
-        ? props.$active
-          ? props.theme.accent.primary
-          : "#EBEBED"
-        : `linear-gradient(
-            135deg,
-            ${props.theme.accent.primary}1a,
-            ${props.theme.accent.secondary}1a
-          )`};
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: ${(props) =>
-      props.theme.background.includes("white")
-        ? props.$active
-          ? "0 4px 8px rgba(0, 0, 0, 0.15)"
-          : "0 2px 4px rgba(0, 0, 0, 0.1)"
-        : "0 6px 8px rgba(0, 0, 0, 0.2)"};
-  }
-
-  &:active {
-    transform: translateY(1px) scale(0.98);
-    transition: all 0.1s ease-out;
-    box-shadow: ${(props) =>
-      props.theme.background.includes("white")
-        ? props.$active
-          ? "0 1px 2px rgba(0, 0, 0, 0.1)"
-          : "0 1px 1px rgba(0, 0, 0, 0.05)"
-        : "0 2px 4px rgba(0, 0, 0, 0.1)"};
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 8px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  &:focus::after {
-    opacity: 0.2;
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-      opacity: 0.2;
-    }
-    50% {
-      transform: scale(1.05);
-      opacity: 0.1;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 0.2;
-    }
-  }
-`);
-
-const ConfigContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  animation: ${fadeIn} 0.8s ease-out forwards;
-  animation-delay: 0.6s;
-  opacity: 0;
-
-  & > * {
-    animation: ${slideIn} 0.5s ease-out forwards;
-    opacity: 0;
-  }
-
-  & > *:nth-child(1) {
-    animation-delay: 0.7s;
-  }
-  & > *:nth-child(2) {
-    animation-delay: 0.8s;
-  }
-`;
-
-const ConfigItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: ${(props) =>
-    props.theme.background.includes("#FFFFFF") ? "#666666" : "#bbbbbb"};
-`;
-
-const ConfigKey = styled.span`
-  background: ${(props) => props.theme.sectionBg};
-  padding: 0.6rem 1rem;
-  border-radius: 12px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter",
-    sans-serif;
-  border: 1px solid
-    ${(props) =>
-      props.theme.background.includes("#FFFFFF") ? "#E5E5E5" : "#3d3d3d"};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
-    0 1px 0 rgba(255, 255, 255, 0.1) inset;
-  font-weight: 600;
-  font-size: 1.2rem;
-  color: ${(props) =>
-    props.theme.background.includes("#FFFFFF") ? "#333333" : "inherit"};
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15),
-      0 1px 0 rgba(255, 255, 255, 0.1) inset;
-  }
-
-  ${(props) =>
-    props.children.match(/[⌘⌥⌃⇧]/) &&
-    `
-    font-size: 1.4rem;
-    font-weight: 400;
-    transition: transform 0.3s ease;
-    
-    &:hover {
-      transform: translateY(-1px) scale(1.05);
-    }
-    `}
-`;
-
-const ThemeTransitionWrapper = styled.div`
-  transition: all 0.3s ease-in-out;
-`;
-
-const pageTransition = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
+  return "";
 };
 
-const buttonVariants = {
-  initial: { scale: 0.9, opacity: 0 },
-  animate: { scale: 1, opacity: 1 },
-  hover: { scale: 1.05, transition: { duration: 0.2 } },
-  tap: { scale: 0.95 },
-};
+const CreateThemeContent = ({ formData, setFormData, errors }) => (
+  <Stack spacing={3}>
+    <Typography color="text.secondary" sx={{ mb: 2 }}>
+      Create a new theme and start customizing your keyboard stickers. The theme
+      files will be automatically generated in the correct locations.
+    </Typography>
+    <TextField
+      label="Theme Name"
+      fullWidth
+      required
+      value={formData.name}
+      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+      error={!!errors.name}
+      helperText={
+        errors.name || "This will be used for file names (e.g., neon_cyberpunk)"
+      }
+      placeholder="e.g., neon_cyberpunk"
+    />
+    <TextField
+      label="Display Name"
+      fullWidth
+      required
+      value={formData.displayName}
+      onChange={(e) =>
+        setFormData({ ...formData, displayName: e.target.value })
+      }
+      error={!!errors.displayName}
+      helperText={
+        errors.displayName || "How your theme will appear in the dropdown"
+      }
+      placeholder="e.g., Neon Cyberpunk"
+    />
+    <TextField
+      label="Description"
+      fullWidth
+      multiline
+      rows={2}
+      value={formData.description}
+      onChange={(e) =>
+        setFormData({ ...formData, description: e.target.value })
+      }
+      error={!!errors.description}
+      helperText={errors.description}
+      placeholder="A cyberpunk theme with neon accents..."
+    />
+    <TextField
+      label="Author"
+      fullWidth
+      required
+      value={formData.author}
+      onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+      error={!!errors.author}
+      helperText={errors.author || "Your name or username"}
+    />
+    <Box sx={{ bgcolor: "grey.900", p: 2, borderRadius: 1 }}>
+      <Typography variant="subtitle2" color="primary.light" gutterBottom>
+        Files that will be created:
+      </Typography>
+      <Typography
+        variant="body2"
+        component="pre"
+        sx={{ color: "grey.300", m: 0 }}
+      >
+        {`src/data/stickerConfigs/your_theme_name.js
+public/themes/your_theme_name/
+├── mac/
+├── windows/
+└── ubuntu/`}
+      </Typography>
+    </Box>
+  </Stack>
+);
 
 const Header = () => {
   const dispatch = useDispatch();
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
+  const [showContribute, setShowContribute] = useState(false);
+  const [showCreateTheme, setShowCreateTheme] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    displayName: "",
+    description: "",
+    author: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [availableThemes, setAvailableThemes] = useState({
+    vscodePurple,
+    vscodeBlue,
+  });
 
   const osOptions = [
     { id: "mac", label: "macOS" },
@@ -315,97 +231,300 @@ const Header = () => {
     { id: "ubuntu", label: "Ubuntu" },
   ];
 
-  console.log("stickerRegistry:", stickerRegistry);
-  console.log("selectedConfig:", selectedConfig);
+  // Load themes dynamically
+  useEffect(() => {
+    const loadThemes = async () => {
+      try {
+        console.log("Fetching themes...");
+        const response = await fetch("/api/themes/list");
+        const data = await response.json();
+        console.log("Received themes data:", data);
 
-  const configOptions = [
-    { id: "vscodePurple", label: "VSCode Purple" },
-    { id: "vscodeBlue", label: "VSCode Blue" },
-  ];
+        if (data.themes) {
+          setAvailableThemes((prev) => {
+            const newThemes = {
+              ...prev,
+              ...data.themes,
+            };
+            console.log("Updated themes:", newThemes);
+            return newThemes;
+          });
+        }
+      } catch (error) {
+        console.error("Error loading themes:", error);
+      }
+    };
 
-  const titleProps = useSpring({
-    from: { opacity: 0, transform: "translateY(-50px)" },
-    to: { opacity: 1, transform: "translateY(0px)" },
-    config: { tension: 280, friction: 20 },
-  });
+    loadThemes();
+  }, []);
 
-  const filterProps = useSpring({
-    from: { opacity: 0, transform: "translateX(-30px)" },
-    to: { opacity: 1, transform: "translateX(0px)" },
-    delay: 200,
-    config: { tension: 280, friction: 20 },
-  });
+  // Generate config options dynamically from available themes
+  const configOptions = useMemo(() => {
+    console.log("Generating config options from themes:", availableThemes);
+    const options = Object.entries(availableThemes)
+      .filter(([key]) => {
+        const isValid = key !== "defaultConfig" && key !== "types";
+        console.log(`Checking key ${key}:`, isValid);
+        return isValid;
+      })
+      .map(([key, theme]) => {
+        const option = {
+          id: key,
+          label: theme.name || key,
+        };
+        console.log(`Created option for ${key}:`, option);
+        return option;
+      });
+
+    console.log("Final config options:", options);
+    return options;
+  }, [availableThemes]);
+
+  const validateForm = () => {
+    const newErrors = {};
+    const nameError = validateThemeName(formData.name);
+    if (nameError) newErrors.name = nameError;
+    if (!formData.displayName)
+      newErrors.displayName = "Display name is required";
+    if (!formData.author) newErrors.author = "Author name is required";
+    return newErrors;
+  };
+
+  const handleCreateTheme = async () => {
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    const themeId = formData.name;
+    const themeData = {
+      id: themeId,
+      name: formData.displayName,
+      description: formData.description,
+      author: formData.author,
+      version: "1.0.0",
+      osConfigs: {
+        mac: { stickers: {} },
+        windows: { stickers: {} },
+        ubuntu: { stickers: {} },
+      },
+    };
+
+    try {
+      const response = await fetch("/api/themes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(themeData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Theme created:", data);
+        setShowCreateTheme(false);
+        setShowSuccess(true);
+
+        // Force reload of the application to load new modules
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      } else {
+        const error = await response.json();
+        setErrors({ submit: error.error || "Failed to create theme" });
+      }
+    } catch (error) {
+      console.error("Error creating theme:", error);
+      setErrors({ submit: "Failed to create theme. Please try again." });
+    }
+  };
+
+  const handleThemeChange = (e) => {
+    const newTheme = e.target.value;
+    console.log("Changing theme to:", newTheme);
+    dispatch(setSelectedConfig(newTheme));
+  };
 
   return (
-    <motion.div
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageTransition}
-    >
-      <HeaderContainer>
-        <animated.div style={titleProps}>
-          <Title
-            animate={{ scale: [0.9, 1.1, 1] }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+    <>
+      <StyledAppBar>
+        <StyledToolbar>
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              background: (theme) => theme.palette.primary.gradient,
+              backgroundClip: "text",
+              color: "transparent",
+              fontWeight: 800,
+            }}
           >
             VSCode Keyboard Stickers
-          </Title>
-        </animated.div>
+          </Typography>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selectedOS + selectedConfig}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.3 }}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <FormControl size="small">
+              <StyledSelect
+                value={selectedOS}
+                onChange={(e) => dispatch(setSelectedOS(e.target.value))}
+                displayEmpty
+                renderValue={(value) =>
+                  osOptions.find((os) => os.id === value)?.label || "Select OS"
+                }
+              >
+                {osOptions.map((os) => (
+                  <MenuItem key={os.id} value={os.id}>
+                    {os.label}
+                  </MenuItem>
+                ))}
+              </StyledSelect>
+            </FormControl>
+
+            <FormControl size="small">
+              <StyledSelect
+                value={selectedConfig}
+                onChange={handleThemeChange}
+                displayEmpty
+                renderValue={(value) =>
+                  configOptions.find((config) => config.id === value)?.label ||
+                  "Select Theme"
+                }
+              >
+                {configOptions.map((config) => {
+                  console.log("Rendering theme option:", config);
+                  return (
+                    <MenuItem key={config.id} value={config.id}>
+                      {config.label}
+                    </MenuItem>
+                  );
+                })}
+              </StyledSelect>
+            </FormControl>
+          </Box>
+        </StyledToolbar>
+      </StyledAppBar>
+
+      <FloatingButtons>
+        <Fab
+          variant="extended"
+          color="primary"
+          onClick={() => setShowContribute(true)}
+        >
+          <GitHubIcon sx={{ mr: 1 }} />
+          Contribute
+        </Fab>
+        <Fab
+          variant="extended"
+          color="secondary"
+          onClick={() => setShowCreateTheme(true)}
+        >
+          <AddIcon sx={{ mr: 1 }} />
+          Create Theme
+        </Fab>
+      </FloatingButtons>
+
+      {/* Updated Contribute Dialog */}
+      <Dialog
+        open={showContribute}
+        onClose={() => setShowContribute(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          <Typography variant="h5" fontWeight="bold">
+            Theme Creation & Contribution Guide
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <ContributeContent />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowContribute(false)}>Close</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setShowContribute(false);
+              setShowCreateTheme(true);
+            }}
           >
-            <animated.div style={filterProps}>
-              <FilterSection>
-                <FilterGroup>
-                  <FilterLabel>Operating System</FilterLabel>
-                  <FilterContainer>
-                    {osOptions.map((os, index) => (
-                      <FilterButton
-                        key={os.id}
-                        variants={buttonVariants}
-                        initial="initial"
-                        animate="animate"
-                        whileHover="hover"
-                        whileTap="tap"
-                        transition={{ delay: index * 0.1 }}
-                        $active={selectedOS === os.id}
-                        onClick={() => dispatch(setSelectedOS(os.id))}
-                      >
-                        {os.label}
-                      </FilterButton>
-                    ))}
-                  </FilterContainer>
-                </FilterGroup>
+            Create Theme
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-                <FilterGroup>
-                  <FilterLabel>Sticker Theme</FilterLabel>
-                  <FilterContainer>
-                    {configOptions.map((config) => (
-                      <FilterButton
-                        key={config.id}
-                        $active={selectedConfig === config.id}
-                        onClick={() => dispatch(setSelectedConfig(config.id))}
-                      >
-                        {config.label}
-                      </FilterButton>
-                    ))}
-                  </FilterContainer>
-                </FilterGroup>
-              </FilterSection>
-            </animated.div>
-          </motion.div>
-        </AnimatePresence>
+      {/* Updated Create Theme Dialog */}
+      <Dialog
+        open={showCreateTheme}
+        onClose={() => setShowCreateTheme(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Typography variant="h5" fontWeight="bold">
+            Create New Theme
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <CreateThemeContent
+            formData={formData}
+            setFormData={setFormData}
+            errors={errors}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowCreateTheme(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={handleCreateTheme}
+            disabled={!formData.name || !formData.author}
+          >
+            Create Theme
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        <ConfigContainer>{/* ... rest of the component ... */}</ConfigContainer>
-      </HeaderContainer>
-    </motion.div>
+      {/* Success Dialog */}
+      <Dialog
+        open={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Typography variant="h5" fontWeight="bold" color="success.main">
+            Theme Created Successfully!
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={2}>
+            <Typography>
+              Your theme has been created successfully. You can find the files
+              at:
+            </Typography>
+            <Box
+              component="pre"
+              sx={{
+                bgcolor: "grey.900",
+                color: "white",
+                p: 2,
+                borderRadius: 1,
+              }}
+            >
+              {`src/data/stickerConfigs/${formData.name}.js`}
+            </Box>
+            <Typography>To start customizing your theme:</Typography>
+            <ol>
+              <li>Open the theme file in your editor</li>
+              <li>Modify the styles for each OS</li>
+              <li>Add sticker images to the public folder</li>
+              <li>Test your changes in the preview</li>
+            </ol>
+            <Typography color="primary">
+              The page will reload in a moment to load your new theme...
+            </Typography>
+          </Stack>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
