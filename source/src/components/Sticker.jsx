@@ -89,10 +89,27 @@ const IconWrapper = styled.div`
   }
 `;
 
+const StickerImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 const Sticker = ({ keyData }) => {
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
+  const customStickers = useSelector((state) => state.keyboard.customStickers);
 
   if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
     return null;
@@ -112,6 +129,11 @@ const Sticker = ({ keyData }) => {
 
   if (!styles || !stickerData) {
     return null;
+  }
+
+  const customSticker = customStickers[keyData.label];
+  if (customSticker?.type === "image") {
+    return <StickerImage src={customSticker.url} alt={keyData.label} />;
   }
 
   const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;

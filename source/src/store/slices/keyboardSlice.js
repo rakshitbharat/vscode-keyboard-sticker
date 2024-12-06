@@ -4,6 +4,7 @@ import { defaultConfig } from "@/data/stickerConfigs/types";
 const initialState = {
   selectedOS: "mac",
   selectedConfig: defaultConfig,
+  customStickers: {},
 };
 
 const keyboardSlice = createSlice({
@@ -16,8 +17,21 @@ const keyboardSlice = createSlice({
     setSelectedConfig: (state, action) => {
       state.selectedConfig = action.payload;
     },
+    setKeySticker: (state, action) => {
+      const { keyLabel, stickerData } = action.payload;
+      state.customStickers[keyLabel] = stickerData;
+    },
+    removeKeySticker: (state, action) => {
+      const keyLabel = action.payload;
+      delete state.customStickers[keyLabel];
+    },
   },
 });
 
-export const { setSelectedOS, setSelectedConfig } = keyboardSlice.actions;
+export const {
+  setSelectedOS,
+  setSelectedConfig,
+  setKeySticker,
+  removeKeySticker,
+} = keyboardSlice.actions;
 export default keyboardSlice.reducer;

@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Sticker from "./Sticker";
 import { useSelector } from "react-redux";
 import { useStickerRegistry } from "@/hooks/useStickerRegistry";
+import { useState } from "react";
+import KeyManagementPopup from "./KeyManagementPopup";
 
 const KeyContainer = styled.div`
   width: ${(props) => props.$width}px;
@@ -100,6 +102,7 @@ const Spacer = styled.div`
 const Key = ({ keyData, style }) => {
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const baseSize = 60;
   const {
@@ -117,23 +120,42 @@ const Key = ({ keyData, style }) => {
       !!stickerRegistry?.[selectedConfig]?.layout?.[label.toLowerCase()],
   });
 
+  const handleKeyClick = () => {
+    setIsPopupOpen(true);
+  };
+
+  const handleStickerUpdate = (keyLabel, stickerData) => {
+    // Update Redux store with new sticker data
+    // You'll need to create a new action for this
+  };
+
   if (spacer) {
     return <Spacer $width={width} $height={baseSize} />;
   }
 
   return (
-    <KeyContainer
-      $width={width}
-      $height={height}
-      $label={label}
-      $position={style?.position}
-      $top={style?.top}
-      $right={style?.right}
-      $zIndex={style?.zIndex}
-    >
-      {label}
-      <Sticker keyData={keyData} />
-    </KeyContainer>
+    <>
+      <KeyContainer
+        onClick={handleKeyClick}
+        $width={width}
+        $height={height}
+        $label={label}
+        $position={style?.position}
+        $top={style?.top}
+        $right={style?.right}
+        $zIndex={style?.zIndex}
+      >
+        {label}
+        <Sticker keyData={keyData} />
+      </KeyContainer>
+
+      <KeyManagementPopup
+        open={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        keyData={keyData}
+        onStickerUpdate={handleStickerUpdate}
+      />
+    </>
   );
 };
 
