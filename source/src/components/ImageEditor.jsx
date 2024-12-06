@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { fabric } from "fabric";
 import styled from "styled-components";
+// Import fabric properly - needs to be client-side only
+import dynamic from "next/dynamic";
+
+// Dynamic import for Fabric.js
+const fabric = dynamic(() => import("fabric").then((fab) => fab.fabric), {
+  ssr: false,
+});
 
 const EditorContainer = styled.div`
   display: flex;
@@ -40,22 +46,16 @@ const Button = styled.button`
   }
 `;
 
-const PreviewKey = styled.div`
-  width: 100px;
-  height: 100px;
-  border-radius: 8px;
-  background: #333;
-  position: relative;
-  overflow: hidden;
-`;
-
 const ImageEditor = ({ onSave }) => {
   const canvasRef = useRef(null);
   const editorRef = useRef(null);
   const [activeObject, setActiveObject] = useState(null);
+  const [fabricLoaded, setFabricLoaded] = useState(false);
 
   useEffect(() => {
-    // Initialize Fabric canvas
+    // Initialize Fabric canvas after fabric is loaded
+    if (!fabricLoaded) return;
+
     const canvas = new fabric.Canvas(canvasRef.current, {
       width: 400,
       height: 400,
@@ -70,9 +70,17 @@ const ImageEditor = ({ onSave }) => {
     return () => {
       canvas.dispose();
     };
+  }, [fabricLoaded]);
+
+  // Set fabric as loaded when it's available
+  useEffect(() => {
+    if (fabric) {
+      setFabricLoaded(true);
+    }
   }, []);
 
   const addText = () => {
+    if (!editorRef.current) return;
     const text = new fabric.IText("Edit me", {
       left: 100,
       top: 100,
@@ -84,6 +92,7 @@ const ImageEditor = ({ onSave }) => {
   };
 
   const addShape = (type) => {
+    if (!editorRef.current) return;
     let shape;
     switch (type) {
       case "circle":
@@ -111,13 +120,14 @@ const ImageEditor = ({ onSave }) => {
   };
 
   const removeSelected = () => {
-    if (activeObject) {
+    if (activeObject && editorRef.current) {
       editorRef.current.remove(activeObject);
       setActiveObject(null);
     }
   };
 
   const downloadImage = () => {
+    if (!editorRef.current) return;
     const dataURL = editorRef.current.toDataURL({
       format: "png",
       quality: 1,
@@ -129,6 +139,7 @@ const ImageEditor = ({ onSave }) => {
   };
 
   const previewOnKey = () => {
+    if (!editorRef.current) return;
     const dataURL = editorRef.current.toDataURL({
       format: "png",
       quality: 1,
