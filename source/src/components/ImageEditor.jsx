@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -42,11 +43,20 @@ const Button = styled.button`
   }
 `;
 
-const ImageEditor = ({ onSave }) => {
+const FileInput = styled.input`
+  display: none;
+`;
+
+const UploadButton = styled(Button)`
+  background: #7b1fa2;
+`;
+
+const ImageEditor = ({ onSave, initialImage }) => {
   const canvasRef = useRef(null);
   const editorRef = useRef(null);
   const [activeObject, setActiveObject] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const fileInputRef = useRef(null);
 
   // Load Fabric.js
   useEffect(() => {
@@ -77,6 +87,16 @@ const ImageEditor = ({ onSave }) => {
 
       editorRef.current = canvas;
 
+      // Load initial image if provided
+      if (initialImage) {
+        fabric.Image.fromURL(initialImage, (img) => {
+          img.scaleToWidth(canvas.width);
+          canvas.add(img);
+          canvas.centerObject(img);
+          canvas.renderAll();
+        });
+      }
+
       // Add event listeners
       canvas.on("selection:created", (e) => setActiveObject(e.target));
       canvas.on("selection:cleared", () => setActiveObject(null));
@@ -87,7 +107,7 @@ const ImageEditor = ({ onSave }) => {
     } catch (error) {
       console.error("Failed to initialize canvas:", error);
     }
-  }, [isLoading]);
+  }, [isLoading, initialImage]);
 
   const addText = () => {
     if (!fabric || !editorRef.current) return;
@@ -156,6 +176,23 @@ const ImageEditor = ({ onSave }) => {
     onSave?.(dataURL);
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !editorRef.current) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      fabric.Image.fromURL(event.target?.result, (img) => {
+        img.scaleToWidth(editorRef.current.width);
+        editorRef.current.add(img);
+        editorRef.current.centerObject(img);
+        editorRef.current.setActiveObject(img);
+        editorRef.current.renderAll();
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
   if (isLoading) {
     return <EditorContainer>Loading editor...</EditorContainer>;
   }
@@ -167,6 +204,15 @@ const ImageEditor = ({ onSave }) => {
       </CanvasContainer>
 
       <ToolBar>
+        <FileInput
+          type="file"
+          ref={fileInputRef}
+          accept="image/*"
+          onChange={handleImageUpload}
+        />
+        <UploadButton onClick={() => fileInputRef.current?.click()}>
+          Upload Image
+        </UploadButton>
         <Button onClick={addText}>Add Text</Button>
         <Button onClick={() => addShape("circle")}>Add Circle</Button>
         <Button onClick={() => addShape("rect")}>Add Rectangle</Button>

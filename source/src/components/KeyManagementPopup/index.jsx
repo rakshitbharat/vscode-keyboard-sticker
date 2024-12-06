@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import ImageEditor from "../ImageEditor";
+import ClientImageEditor from "../ClientImageEditor";
 
 const PopupOverlay = styled.div`
   position: fixed;
@@ -81,8 +81,10 @@ const KeyInfo = styled.div`
 
 const KeyManagementPopup = ({ keyData, onClose, onSave }) => {
   const [activeTab, setActiveTab] = useState("info");
+  const [previewImage, setPreviewImage] = useState(keyData?.customImage);
 
   const handleSave = (imageData) => {
+    setPreviewImage(imageData);
     onSave?.({
       ...keyData,
       customImage: imageData,
@@ -123,10 +125,31 @@ const KeyManagementPopup = ({ keyData, onClose, onSave }) => {
                 <strong>Location:</strong> {keyData.location}
               </p>
             )}
+            {previewImage && (
+              <div>
+                <p>
+                  <strong>Custom Image:</strong>
+                </p>
+                <img
+                  src={previewImage}
+                  alt="Custom key image"
+                  style={{
+                    maxWidth: "100px",
+                    maxHeight: "100px",
+                    marginTop: "10px",
+                  }}
+                />
+              </div>
+            )}
           </KeyInfo>
         )}
 
-        {activeTab === "editor" && <ImageEditor onSave={handleSave} />}
+        {activeTab === "editor" && (
+          <ClientImageEditor
+            onSave={handleSave}
+            initialImage={keyData?.customImage}
+          />
+        )}
       </PopupContent>
     </PopupOverlay>
   );
