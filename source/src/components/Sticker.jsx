@@ -71,7 +71,24 @@ const PasteIcon = () => (
 const icons = {
   copy: CopyIcon,
   paste: PasteIcon,
-  // Add other icons...
+  cut: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+    >
+      <path d="M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm0 12c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3z" />
+    </svg>
+  ),
+  undo: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+    >
+      <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
+    </svg>
+  ),
 };
 
 const IconWrapper = styled.div`
@@ -133,7 +150,8 @@ const Sticker = ({ keyData }) => {
   };
 
   const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;
-  const icon = !Array.isArray(stickerData) ? stickerData.icon : null;
+  const iconName = !Array.isArray(stickerData) ? stickerData.icon : null;
+  const Icon = iconName ? icons[iconName] : null;
 
   const truncateText = (text) => {
     if (text.length > 12) {
@@ -146,9 +164,9 @@ const Sticker = ({ keyData }) => {
     <StickerContainer $position={styles.position}>
       {texts.map((text, index) => (
         <StickerItem key={index} $style={styles.style}>
-          {icon && (
+          {Icon && (
             <IconWrapper>
-              <IconComponent icon={icon} />
+              <Icon />
             </IconWrapper>
           )}
           {truncateText(text)}
