@@ -63,6 +63,113 @@ const FloatingButtons = styled(Box)({
   zIndex: 1000,
 });
 
+const ContributeContent = () => (
+  <Stack spacing={3}>
+    <Typography variant="h6" color="primary">
+      Theme File Structure
+    </Typography>
+    <Typography>
+      When you create a theme, the following structure is automatically
+      generated:
+    </Typography>
+    <Box
+      component="pre"
+      sx={{
+        bgcolor: "grey.900",
+        color: "white",
+        p: 2,
+        borderRadius: 1,
+        overflow: "auto",
+      }}
+    >
+      {`src/data/stickerConfigs/
+├── your_theme_name.js    # Auto-generated theme config
+└── index.js             # Auto-updated with your theme
+
+public/themes/
+└── your_theme_name/     # Theme images folder
+    ├── mac/            # macOS specific stickers
+    ├── windows/        # Windows specific stickers
+    └── ubuntu/         # Ubuntu specific stickers`}
+    </Box>
+    <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
+      How It Works
+    </Typography>
+    <Box component="ol" sx={{ pl: 2 }}>
+      <li>Create a new theme using the "Create Theme" button</li>
+      <li>Theme configuration file is automatically generated</li>
+      <li>Upload sticker images for each key</li>
+      <li>Images are stored in the public folder by OS</li>
+      <li>Theme is automatically registered and ready to use</li>
+    </Box>
+    <Typography variant="h6" color="primary">
+      Contributing Back
+    </Typography>
+    <Typography>
+      After creating your theme, you can contribute it back to the project:
+    </Typography>
+    <Box component="ol" sx={{ pl: 2 }}>
+      <li>Your theme files are already in the correct structure</li>
+      <li>Create a fork of the repository</li>
+      <li>Copy your theme files to your fork</li>
+      <li>Create a pull request</li>
+    </Box>
+  </Stack>
+);
+
+const CreateThemeContent = () => (
+  <Stack spacing={3}>
+    <Typography color="text.secondary" sx={{ mb: 2 }}>
+      Create a new theme and start customizing your keyboard stickers. The theme
+      files will be automatically generated in the correct locations.
+    </Typography>
+    <TextField
+      label="Theme Name"
+      fullWidth
+      required
+      helperText="This will be used for file names and folder structure"
+      placeholder="e.g., neon_cyberpunk"
+    />
+    <TextField
+      label="Display Name"
+      fullWidth
+      required
+      helperText="How your theme will appear in the dropdown"
+      placeholder="e.g., Neon Cyberpunk"
+    />
+    <TextField
+      label="Description"
+      fullWidth
+      multiline
+      rows={2}
+      helperText="Brief description of your theme"
+      placeholder="A cyberpunk theme with neon accents..."
+    />
+    <TextField
+      label="Author"
+      fullWidth
+      required
+      helperText="Your name or username"
+    />
+    <Box sx={{ bgcolor: "grey.900", p: 2, borderRadius: 1 }}>
+      <Typography variant="subtitle2" color="primary.light" gutterBottom>
+        Files that will be created:
+      </Typography>
+      <Typography
+        variant="body2"
+        component="pre"
+        sx={{ color: "grey.300", m: 0 }}
+      >
+        {`src/data/stickerConfigs/your_theme_name.js
+public/themes/your_theme_name/
+├── mac/
+├── windows/
+└── ubuntu/`}
+      </Typography>
+    </Box>
+  </Stack>
+);
+
 const Header = () => {
   const dispatch = useDispatch();
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
@@ -190,7 +297,7 @@ const Header = () => {
         </Fab>
       </FloatingButtons>
 
-      {/* Contribute Dialog */}
+      {/* Updated Contribute Dialog */}
       <Dialog
         open={showContribute}
         onClose={() => setShowContribute(false)}
@@ -199,59 +306,27 @@ const Header = () => {
       >
         <DialogTitle>
           <Typography variant="h5" fontWeight="bold">
-            Contributing to VSCode Keyboard Stickers
+            Theme Creation & Contribution Guide
           </Typography>
         </DialogTitle>
         <DialogContent>
-          <Stack spacing={3} sx={{ mt: 2 }}>
-            <Typography variant="h6" color="primary">
-              How to Contribute
-            </Typography>
-            <Typography>
-              Contributing to VSCode Keyboard Stickers is easy! Follow these
-              steps:
-            </Typography>
-            <Box component="ol" sx={{ pl: 2 }}>
-              <li>Fork the repository on GitHub</li>
-              <li>Create a new branch for your theme</li>
-              <li>Add your theme configuration and images</li>
-              <li>Test your theme locally</li>
-              <li>Submit a pull request</li>
-            </Box>
-            <Typography variant="h6" color="primary">
-              Theme Structure
-            </Typography>
-            <Box
-              component="pre"
-              sx={{
-                bgcolor: "grey.900",
-                p: 2,
-                borderRadius: 1,
-                overflow: "auto",
-              }}
-            >
-              {`your-theme/
-├── config.js
-└── images/
-    ├── mac/
-    ├── windows/
-    └── ubuntu/`}
-            </Box>
-          </Stack>
+          <ContributeContent />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowContribute(false)}>Close</Button>
           <Button
             variant="contained"
-            href="https://github.com/yourusername/vscode-keyboard-stickers"
-            target="_blank"
+            onClick={() => {
+              setShowContribute(false);
+              setShowCreateTheme(true);
+            }}
           >
-            View on GitHub
+            Create Theme
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Create Theme Dialog */}
+      {/* Updated Create Theme Dialog */}
       <Dialog
         open={showCreateTheme}
         onClose={() => setShowCreateTheme(false)}
@@ -264,40 +339,7 @@ const Header = () => {
           </Typography>
         </DialogTitle>
         <DialogContent>
-          <Stack spacing={3} sx={{ mt: 2 }}>
-            <TextField
-              label="Theme Name"
-              fullWidth
-              value={newTheme.name}
-              onChange={(e) =>
-                setNewTheme((prev) => ({ ...prev, name: e.target.value }))
-              }
-              placeholder="e.g., My Awesome Theme"
-            />
-            <TextField
-              label="Description"
-              fullWidth
-              multiline
-              rows={3}
-              value={newTheme.description}
-              onChange={(e) =>
-                setNewTheme((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
-              }
-              placeholder="Describe your theme..."
-            />
-            <TextField
-              label="Author"
-              fullWidth
-              value={newTheme.author}
-              onChange={(e) =>
-                setNewTheme((prev) => ({ ...prev, author: e.target.value }))
-              }
-              placeholder="Your name"
-            />
-          </Stack>
+          <CreateThemeContent />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowCreateTheme(false)}>Cancel</Button>
