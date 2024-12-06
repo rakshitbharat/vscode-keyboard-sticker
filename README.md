@@ -2,7 +2,7 @@
 
 An interactive keyboard sticker visualizer that displays VSCode shortcuts across different operating systems. Add beautiful, themed stickers to your keyboard layout with OS-specific shortcut hints.
 
-![VSCode Keyboard Stickers](./public/preview.png)
+![VSCode Keyboard Stickers](./images/preview.png)
 
 ## Features
 
@@ -15,7 +15,7 @@ An interactive keyboard sticker visualizer that displays VSCode shortcuts across
 
 ## Demo
 
-Check out the live demo: [VSCode Keyboard Stickers](https://rakshitbharat.github.io/vscode-keyboard-sticker)
+Check out the live demo: [VSCode Keyboard Stickers](https://vscode-keyboard-sticker.vercel.app)
 
 ## Getting Started
 
