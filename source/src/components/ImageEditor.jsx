@@ -1,12 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-// Import fabric properly - needs to be client-side only
-import dynamic from "next/dynamic";
 
-// Dynamic import for Fabric.js
-const fabric = dynamic(() => import("fabric").then((fab) => fab.fabric), {
-  ssr: false,
-});
+// We'll initialize fabric later in useEffect
+let fabric = null;
 
 const EditorContainer = styled.div`
   display: flex;
@@ -50,37 +46,51 @@ const ImageEditor = ({ onSave }) => {
   const canvasRef = useRef(null);
   const editorRef = useRef(null);
   const [activeObject, setActiveObject] = useState(null);
-  const [fabricLoaded, setFabricLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Load Fabric.js
   useEffect(() => {
-    // Initialize Fabric canvas after fabric is loaded
-    if (!fabricLoaded) return;
-
-    const canvas = new fabric.Canvas(canvasRef.current, {
-      width: 400,
-      height: 400,
-      backgroundColor: "#9c27b0",
-    });
-    editorRef.current = canvas;
-
-    // Add event listeners
-    canvas.on("selection:created", (e) => setActiveObject(e.target));
-    canvas.on("selection:cleared", () => setActiveObject(null));
-
-    return () => {
-      canvas.dispose();
+    const loadFabric = async () => {
+      try {
+        // Dynamic import of fabric
+        const fabricModule = await import("fabric");
+        fabric = fabricModule.fabric;
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Failed to load Fabric.js:", error);
+      }
     };
-  }, [fabricLoaded]);
 
-  // Set fabric as loaded when it's available
-  useEffect(() => {
-    if (fabric) {
-      setFabricLoaded(true);
-    }
+    loadFabric();
   }, []);
 
+  // Initialize canvas after Fabric is loaded
+  useEffect(() => {
+    if (isLoading || !fabric || !canvasRef.current) return;
+
+    try {
+      const canvas = new fabric.Canvas(canvasRef.current, {
+        width: 400,
+        height: 400,
+        backgroundColor: "#9c27b0",
+      });
+
+      editorRef.current = canvas;
+
+      // Add event listeners
+      canvas.on("selection:created", (e) => setActiveObject(e.target));
+      canvas.on("selection:cleared", () => setActiveObject(null));
+
+      return () => {
+        canvas.dispose();
+      };
+    } catch (error) {
+      console.error("Failed to initialize canvas:", error);
+    }
+  }, [isLoading]);
+
   const addText = () => {
-    if (!editorRef.current) return;
+    if (!fabric || !editorRef.current) return;
     const text = new fabric.IText("Edit me", {
       left: 100,
       top: 100,
@@ -92,7 +102,7 @@ const ImageEditor = ({ onSave }) => {
   };
 
   const addShape = (type) => {
-    if (!editorRef.current) return;
+    if (!fabric || !editorRef.current) return;
     let shape;
     switch (type) {
       case "circle":
@@ -120,10 +130,9 @@ const ImageEditor = ({ onSave }) => {
   };
 
   const removeSelected = () => {
-    if (activeObject && editorRef.current) {
-      editorRef.current.remove(activeObject);
-      setActiveObject(null);
-    }
+    if (!editorRef.current || !activeObject) return;
+    editorRef.current.remove(activeObject);
+    setActiveObject(null);
   };
 
   const downloadImage = () => {
@@ -146,6 +155,10 @@ const ImageEditor = ({ onSave }) => {
     });
     onSave?.(dataURL);
   };
+
+  if (isLoading) {
+    return <EditorContainer>Loading editor...</EditorContainer>;
+  }
 
   return (
     <EditorContainer>
