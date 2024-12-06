@@ -106,16 +106,33 @@ const IconWrapper = styled.div`
   }
 `;
 
-const StickerImage = styled.img`
+const StickerImage = styled(Image)`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: inherit;
   opacity: 0.9;
   transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const StickerSVG = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+  filter: ${(props) => (props.theme.mode === "dark" ? "invert(1)" : "none")};
 
   &:hover {
     opacity: 1;
@@ -163,6 +180,40 @@ const Sticker = ({ keyData }) => {
     },
     position: "top-right",
   };
+
+  if (stickerData.image) {
+    const isSvg = stickerData.image.endsWith(".svg");
+
+    if (isSvg) {
+      return (
+        <StickerContainer $position={styles.position}>
+          <StickerSVG
+            src={stickerData.image}
+            alt={
+              Array.isArray(stickerData.text)
+                ? stickerData.text[0]
+                : stickerData.text
+            }
+          />
+        </StickerContainer>
+      );
+    }
+
+    return (
+      <StickerContainer $position={styles.position}>
+        <StickerImage
+          src={stickerData.image}
+          alt={
+            Array.isArray(stickerData.text)
+              ? stickerData.text[0]
+              : stickerData.text
+          }
+          width={64}
+          height={64}
+        />
+      </StickerContainer>
+    );
+  }
 
   const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;
   const iconName = !Array.isArray(stickerData) ? stickerData.icon : null;
