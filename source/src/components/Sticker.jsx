@@ -161,13 +161,6 @@ const Sticker = ({ keyData }) => {
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
 
-  console.log("Sticker render:", {
-    keyData,
-    selectedOS,
-    selectedConfig,
-    stickerRegistry,
-  });
-
   if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
     return null;
   }
@@ -202,7 +195,7 @@ const Sticker = ({ keyData }) => {
           alt={
             Array.isArray(stickerData.text)
               ? stickerData.text[0]
-              : stickerData.text
+              : stickerData.text || ""
           }
         />
       </StickerContainer>
@@ -211,6 +204,8 @@ const Sticker = ({ keyData }) => {
 
   // For text and icon stickers
   const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;
+  if (!texts) return null;
+
   const iconName = !Array.isArray(stickerData) ? stickerData.icon : null;
   const Icon = iconName ? icons[iconName] : null;
 
