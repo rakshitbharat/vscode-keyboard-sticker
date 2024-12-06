@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import Image from "next/image";
 import { useStickerRegistry } from "@/hooks/useStickerRegistry";
 import dynamic from "next/dynamic";
+import { useState, useEffect } from "react";
 
 const StickerContainer = styled.div`
   position: absolute;
@@ -16,7 +17,6 @@ const StickerContainer = styled.div`
   justify-content: center;
   overflow: hidden;
   border-radius: 8px;
-  background-color: ${(props) => props.$color || "transparent"};
 `;
 
 const StickerItem = styled.div`
@@ -119,11 +119,6 @@ const StickerSVG = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 1em;
-  text-align: center;
-  line-height: 1.2;
-  overflow: hidden;
 
   &:hover {
     opacity: 1;
@@ -132,6 +127,7 @@ const StickerSVG = styled.div`
   svg {
     width: 100%;
     height: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -153,6 +149,7 @@ const StickerComponent = styled.div`
 `;
 
 const Sticker = ({ keyData }) => {
+  const [svgContent, setSvgContent] = useState(null);
   const selectedOS = useSelector((state) => state.keyboard.selectedOS);
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
@@ -169,57 +166,55 @@ const Sticker = ({ keyData }) => {
 
   if (!stickerData) return null;
 
-  const styles = theme.styles?.[selectedOS] || {
-    style: {
-      backgroundColor: "rgba(156, 39, 176, 0.9)",
-      color: "#FFFFFF",
-      fontSize: "0.6em",
-      padding: "1px 3px",
-      borderRadius: "3px",
-    },
-    position: "top-right",
-  };
+  useEffect(() => {
+    const loadSvg = async () => {
+      try {
+        const path = stickerData.image?.replace("/themes/", "");
+        if (path) {
+          const response = await fetch(`/api/svg/${path}`);
+          if (response.ok) {
+            const content = await response.text();
+            setSvgContent(content);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading SVG:", error);
+      }
+    };
+
+    if (stickerData.image) {
+      loadSvg();
+    }
+  }, [stickerData?.image]);
 
   // If it's an image sticker
   if (stickerData.image) {
-    const color = styles.style.backgroundColor;
-    const text = Array.isArray(stickerData.text)
-      ? stickerData.text[0]
-      : stickerData.text || keyData.label;
+    console.log(`Loading sticker for ${keyData.label}:`, {
+      keyData,
+      stickerData,
+      image: stickerData.image,
+    });
+
+    if (svgContent) {
+      return (
+        <StickerContainer>
+          <StickerSVG dangerouslySetInnerHTML={{ __html: svgContent }} />
+        </StickerContainer>
+      );
+    }
 
     return (
-      <StickerContainer $color={color}>
-        <StickerSVG
-          dangerouslySetInnerHTML={{
-            __html: `
-              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="grad_${
-                    keyData.label
-                  }" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:${color};stop-opacity:0.95"/>
-                    <stop offset="100%" style="stop-color:${color};stop-opacity:0.85"/>
-                  </linearGradient>
-                </defs>
-                <rect 
-                  width="100" 
-                  height="100" 
-                  fill="url(#grad_${keyData.label})"
-                />
-                <text 
-                  x="50" 
-                  y="50" 
-                  font-family="Arial, sans-serif" 
-                  font-size="40" 
-                  fill="white" 
-                  text-anchor="middle"
-                  dominant-baseline="middle"
-                  font-weight="bold"
-                >${text.charAt(0).toUpperCase()}</text>
-              </svg>
-            `,
-          }}
-        />
+      <StickerContainer>
+        <StickerSVG>
+          <img
+            src={stickerData.image}
+            alt={stickerData.text || keyData.label}
+            style={{
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+          />
+        </StickerSVG>
       </StickerContainer>
     );
   }
@@ -241,7 +236,7 @@ const Sticker = ({ keyData }) => {
   return (
     <StickerContainer>
       {texts.map((text, index) => (
-        <StickerItem key={index} $style={styles.style}>
+        <StickerItem key={index} $style={theme.styles[selectedOS].style}>
           {Icon && (
             <IconWrapper>
               <Icon />

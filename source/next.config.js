@@ -5,18 +5,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  images: {
-    domains: ["localhost"],
-    remotePatterns: [
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "3000",
-        pathname: "/themes/**",
-      },
-    ],
-  },
-  webpack: (config) => {
+  webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
       use: ["@svgr/webpack"],

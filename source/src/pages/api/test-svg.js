@@ -3,27 +3,25 @@ import path from "path";
 
 export default async function handler(req, res) {
   try {
-    const svgPath = path.join(
-      process.cwd(),
-      "public/themes/vscodePurple/mac/copy.svg"
-    );
-    const exists = await fs
-      .access(svgPath)
-      .then(() => true)
-      .catch(() => false);
+    // List all SVG files
+    const macDir = path.join(process.cwd(), "public/themes/vscodePurple/mac");
+    const files = await fs.readdir(macDir);
+    const svgFiles = files.filter((f) => f.endsWith(".svg"));
 
-    if (!exists) {
-      res.status(404).json({ error: "SVG file not found" });
-      return;
-    }
-
+    // Read content of first SVG
+    const firstSvg = svgFiles[0];
+    const svgPath = path.join(macDir, firstSvg);
     const content = await fs.readFile(svgPath, "utf8");
+
     res.status(200).json({
-      exists: true,
-      path: svgPath,
-      content,
+      files: svgFiles,
+      example: {
+        file: firstSvg,
+        content,
+      },
     });
   } catch (error) {
+    console.error("Error:", error);
     res.status(500).json({ error: error.message });
   }
 }

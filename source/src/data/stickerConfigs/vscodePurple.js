@@ -4,7 +4,7 @@ export default {
   id: "vscodePurple",
   name: "Purple Stickers",
   description: "Classic VSCode theme with purple sticker accents",
-  author: "Your Name",
+  author: "Default",
   version: "1.0.0",
   styles: {
     mac: {
@@ -44,24 +44,31 @@ export default {
   osConfigs: {
     mac: {
       stickers: {
-        a: {
-          component: MyCustomComponent,
+        command: {
+          image: "/themes/vscodePurple/mac/command.svg",
         },
-        b: {
-          component: "@/components/stickers/AnotherComponent",
+        option: {
+          image: "/themes/vscodePurple/mac/command.svg",
+        },
+        control: {
+          image: "/themes/vscodePurple/mac/command.svg",
+        },
+        f1: {
+          text: ["Help"],
+          image: "/themes/vscodePurple/mac/circle-question.svg",
         },
         c: {
-          text: ["⌘ + C", "Copy Line"],
+          text: ["⌘ + C", "Copy"],
           icon: "copy",
           image: "/themes/vscodePurple/mac/copy.svg",
         },
         v: {
-          text: ["⌘ + V", "Paste Line"],
+          text: ["⌘ + V", "Paste"],
           icon: "paste",
           image: "/themes/vscodePurple/mac/paste.svg",
         },
         x: {
-          text: ["⌘ + X", "Cut Line"],
+          text: ["⌘ + X", "Cut"],
           icon: "cut",
           image: "/themes/vscodePurple/mac/scissors.svg",
         },
@@ -70,7 +77,14 @@ export default {
           icon: "undo",
           image: "/themes/vscodePurple/mac/rotate-left.svg",
         },
-        f: ["⌘ + F", "Find"],
+        f: {
+          text: ["⌘ + F", "Find"],
+          image: "/themes/vscodePurple/mac/magnifying-glass.svg",
+        },
+        b: {
+          text: ["⌘ + B", "Toggle Sidebar"],
+          image: "/themes/vscodePurple/mac/table-columns.svg",
+        },
         s: {
           text: ["⌘ + S", "Save"],
           image: "/themes/vscodePurple/mac/floppy-disk.svg",
@@ -79,16 +93,8 @@ export default {
           text: ["⌘ + P", "Quick Open"],
           image: "/themes/vscodePurple/mac/folder-open.svg",
         },
-        b: {
-          text: ["⌘ + B", "Toggle Sidebar"],
-          image: "/themes/vscodePurple/mac/table-columns.svg",
-        },
-        f1: {
-          text: ["Help"],
-          image: "/themes/vscodePurple/mac/circle-question.svg",
-        },
         f2: {
-          text: ["Rename Symbol"],
+          text: ["Rename"],
           image: "/themes/vscodePurple/mac/pen-to-square.svg",
         },
         f3: {
@@ -100,7 +106,7 @@ export default {
           image: "/themes/vscodePurple/mac/magnifying-glass.svg",
         },
         f5: {
-          text: ["Start Debug"],
+          text: ["Debug"],
           image: "/themes/vscodePurple/mac/bug.svg",
         },
         f6: {
@@ -108,19 +114,19 @@ export default {
           image: "/themes/vscodePurple/mac/pen.svg",
         },
         f7: {
-          text: ["Focus Terminal"],
+          text: ["Terminal"],
           image: "/themes/vscodePurple/mac/terminal.svg",
         },
         f8: {
-          text: ["Focus Problems"],
+          text: ["Problems"],
           image: "/themes/vscodePurple/mac/triangle-exclamation.svg",
         },
         f9: {
-          text: ["Toggle Breakpoint"],
+          text: ["Breakpoint"],
           image: "/themes/vscodePurple/mac/circle-dot.svg",
         },
         f10: {
-          text: ["Show Menu Bar"],
+          text: ["Menu"],
           image: "/themes/vscodePurple/mac/bars.svg",
         },
         f11: {
@@ -135,18 +141,27 @@ export default {
     },
     windows: {
       stickers: {
+        super: {
+          image: "/themes/vscodePurple/windows/circle-dot.svg",
+        },
+        control: {
+          image: "/themes/vscodePurple/windows/circle-dot.svg",
+        },
+        alt: {
+          image: "/themes/vscodePurple/windows/circle-dot.svg",
+        },
         c: {
-          text: ["Ctrl + C", "Copy Line"],
+          text: ["Ctrl + C", "Copy"],
           icon: "copy",
           image: "/themes/vscodePurple/windows/copy.svg",
         },
         v: {
-          text: ["Ctrl + V", "Paste Line"],
+          text: ["Ctrl + V", "Paste"],
           icon: "paste",
           image: "/themes/vscodePurple/windows/paste.svg",
         },
         x: {
-          text: ["Ctrl + X", "Cut Line"],
+          text: ["Ctrl + X", "Cut"],
           icon: "cut",
           image: "/themes/vscodePurple/windows/scissors.svg",
         },
@@ -155,7 +170,14 @@ export default {
           icon: "undo",
           image: "/themes/vscodePurple/windows/rotate-left.svg",
         },
-        f: ["Ctrl + F", "Find"],
+        f: {
+          text: ["Ctrl + F", "Find"],
+          image: "/themes/vscodePurple/windows/magnifying-glass.svg",
+        },
+        b: {
+          text: ["Ctrl + B", "Toggle Sidebar"],
+          image: "/themes/vscodePurple/windows/table-columns.svg",
+        },
         s: {
           text: ["Ctrl + S", "Save"],
           image: "/themes/vscodePurple/windows/floppy-disk.svg",
@@ -164,16 +186,12 @@ export default {
           text: ["Ctrl + P", "Quick Open"],
           image: "/themes/vscodePurple/windows/folder-open.svg",
         },
-        b: {
-          text: ["Ctrl + B", "Toggle Sidebar"],
-          image: "/themes/vscodePurple/windows/table-columns.svg",
-        },
         f1: {
           text: ["Help"],
           image: "/themes/vscodePurple/windows/circle-question.svg",
         },
         f2: {
-          text: ["Rename Symbol"],
+          text: ["Rename"],
           image: "/themes/vscodePurple/windows/pen-to-square.svg",
         },
         f3: {
@@ -185,7 +203,7 @@ export default {
           image: "/themes/vscodePurple/windows/magnifying-glass.svg",
         },
         f5: {
-          text: ["Start Debug"],
+          text: ["Debug"],
           image: "/themes/vscodePurple/windows/bug.svg",
         },
         f6: {
@@ -193,19 +211,19 @@ export default {
           image: "/themes/vscodePurple/windows/pen.svg",
         },
         f7: {
-          text: ["Focus Terminal"],
+          text: ["Terminal"],
           image: "/themes/vscodePurple/windows/terminal.svg",
         },
         f8: {
-          text: ["Focus Problems"],
+          text: ["Problems"],
           image: "/themes/vscodePurple/windows/triangle-exclamation.svg",
         },
         f9: {
-          text: ["Toggle Breakpoint"],
+          text: ["Breakpoint"],
           image: "/themes/vscodePurple/windows/circle-dot.svg",
         },
         f10: {
-          text: ["Show Menu Bar"],
+          text: ["Menu"],
           image: "/themes/vscodePurple/windows/bars.svg",
         },
         f11: {
@@ -220,18 +238,27 @@ export default {
     },
     ubuntu: {
       stickers: {
+        super: {
+          image: "/themes/vscodePurple/ubuntu/circle-dot.svg",
+        },
+        control: {
+          image: "/themes/vscodePurple/ubuntu/circle-dot.svg",
+        },
+        alt: {
+          image: "/themes/vscodePurple/ubuntu/circle-dot.svg",
+        },
         c: {
-          text: ["Ctrl + C", "Copy Line"],
+          text: ["Ctrl + C", "Copy"],
           icon: "copy",
           image: "/themes/vscodePurple/ubuntu/copy.svg",
         },
         v: {
-          text: ["Ctrl + V", "Paste Line"],
+          text: ["Ctrl + V", "Paste"],
           icon: "paste",
           image: "/themes/vscodePurple/ubuntu/paste.svg",
         },
         x: {
-          text: ["Ctrl + X", "Cut Line"],
+          text: ["Ctrl + X", "Cut"],
           icon: "cut",
           image: "/themes/vscodePurple/ubuntu/scissors.svg",
         },
@@ -240,7 +267,14 @@ export default {
           icon: "undo",
           image: "/themes/vscodePurple/ubuntu/rotate-left.svg",
         },
-        f: ["Ctrl + F", "Find"],
+        f: {
+          text: ["Ctrl + F", "Find"],
+          image: "/themes/vscodePurple/ubuntu/magnifying-glass.svg",
+        },
+        b: {
+          text: ["Ctrl + B", "Toggle Sidebar"],
+          image: "/themes/vscodePurple/ubuntu/table-columns.svg",
+        },
         s: {
           text: ["Ctrl + S", "Save"],
           image: "/themes/vscodePurple/ubuntu/floppy-disk.svg",
@@ -249,16 +283,12 @@ export default {
           text: ["Ctrl + P", "Quick Open"],
           image: "/themes/vscodePurple/ubuntu/folder-open.svg",
         },
-        b: {
-          text: ["Ctrl + B", "Toggle Sidebar"],
-          image: "/themes/vscodePurple/ubuntu/table-columns.svg",
-        },
         f1: {
           text: ["Help"],
           image: "/themes/vscodePurple/ubuntu/circle-question.svg",
         },
         f2: {
-          text: ["Rename Symbol"],
+          text: ["Rename"],
           image: "/themes/vscodePurple/ubuntu/pen-to-square.svg",
         },
         f3: {
@@ -270,7 +300,7 @@ export default {
           image: "/themes/vscodePurple/ubuntu/magnifying-glass.svg",
         },
         f5: {
-          text: ["Start Debug"],
+          text: ["Debug"],
           image: "/themes/vscodePurple/ubuntu/bug.svg",
         },
         f6: {
@@ -278,19 +308,19 @@ export default {
           image: "/themes/vscodePurple/ubuntu/pen.svg",
         },
         f7: {
-          text: ["Focus Terminal"],
+          text: ["Terminal"],
           image: "/themes/vscodePurple/ubuntu/terminal.svg",
         },
         f8: {
-          text: ["Focus Problems"],
+          text: ["Problems"],
           image: "/themes/vscodePurple/ubuntu/triangle-exclamation.svg",
         },
         f9: {
-          text: ["Toggle Breakpoint"],
+          text: ["Breakpoint"],
           image: "/themes/vscodePurple/ubuntu/circle-dot.svg",
         },
         f10: {
-          text: ["Show Menu Bar"],
+          text: ["Menu"],
           image: "/themes/vscodePurple/ubuntu/bars.svg",
         },
         f11: {
