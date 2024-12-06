@@ -4,6 +4,20 @@ An interactive keyboard sticker visualizer that displays VSCode shortcuts across
 
 ![VSCode Keyboard Stickers](./images/preview.png)
 
+## Operating System Layouts
+
+### macOS
+
+![macOS Keyboard Layout](./images/macOS.png)
+
+### Windows
+
+![Windows Keyboard Layout](./images/windows.png)
+
+### Ubuntu
+
+![Ubuntu Keyboard Layout](./images/ubuntu.png)
+
 ## Features
 
 - 🎨 Interactive sticker customization
