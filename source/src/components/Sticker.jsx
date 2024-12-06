@@ -133,7 +133,6 @@ const StickerSVG = styled.img`
   border-radius: inherit;
   opacity: 0.9;
   transition: opacity 0.2s;
-  filter: ${(props) => (props.theme.mode === "dark" ? "invert(1)" : "none")};
 
   &:hover {
     opacity: 1;
@@ -170,22 +169,16 @@ const Sticker = ({ keyData }) => {
   });
 
   if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
-    console.log("Missing required props:", {
-      hasLabel: !!keyData?.label,
-      hasOS: !!selectedOS,
-      hasConfig: !!selectedConfig,
-      hasRegistry: !!stickerRegistry,
-    });
     return null;
   }
 
   const theme = stickerRegistry[selectedConfig];
-  console.log("Selected theme:", theme);
   if (!theme) return null;
 
   const stickerData =
     theme.osConfigs?.[selectedOS]?.stickers?.[keyData.label.toLowerCase()];
-  console.log("Sticker data:", stickerData);
+  console.log("Sticker data for", keyData.label, ":", stickerData);
+
   if (!stickerData) return null;
 
   const styles = theme.styles?.[selectedOS] || {
@@ -199,97 +192,49 @@ const Sticker = ({ keyData }) => {
     position: "top-right",
   };
 
-  if (stickerData) {
-    // Handle component sticker
-    if (stickerData.component) {
-      // If component is a string path, load it dynamically
-      if (typeof stickerData.component === "string") {
-        const DynamicComponent = dynamic(() => import(stickerData.component), {
-          loading: () => <div>Loading...</div>,
-        });
-
-        return (
-          <StickerContainer $position={styles.position}>
-            <StickerComponent>
-              <DynamicComponent />
-            </StickerComponent>
-          </StickerContainer>
-        );
-      }
-
-      // If component is a React component, render it directly
-      const Component = stickerData.component;
-      return (
-        <StickerContainer $position={styles.position}>
-          <StickerComponent>
-            <Component />
-          </StickerComponent>
-        </StickerContainer>
-      );
-    }
-
-    // Handle image sticker
-    if (stickerData.image) {
-      const isSvg = stickerData.image.endsWith(".svg");
-
-      if (isSvg) {
-        return (
-          <StickerContainer $position={styles.position}>
-            <StickerSVG
-              src={stickerData.image}
-              alt={
-                Array.isArray(stickerData.text)
-                  ? stickerData.text[0]
-                  : stickerData.text
-              }
-            />
-          </StickerContainer>
-        );
-      }
-
-      return (
-        <StickerContainer $position={styles.position}>
-          <StickerImage
-            src={stickerData.image}
-            alt={
-              Array.isArray(stickerData.text)
-                ? stickerData.text[0]
-                : stickerData.text
-            }
-            width={64}
-            height={64}
-          />
-        </StickerContainer>
-      );
-    }
-
-    // Handle text and icon sticker
-    const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;
-    const iconName = !Array.isArray(stickerData) ? stickerData.icon : null;
-    const Icon = iconName ? icons[iconName] : null;
-
-    const truncateText = (text) => {
-      if (text.length > 12) {
-        return text.slice(0, 10) + "...";
-      }
-      return text;
-    };
-
+  // If it's an image sticker
+  if (stickerData.image) {
+    console.log("Loading image:", stickerData.image);
     return (
       <StickerContainer $position={styles.position}>
-        {texts.map((text, index) => (
-          <StickerItem key={index} $style={styles.style}>
-            {Icon && (
-              <IconWrapper>
-                <Icon />
-              </IconWrapper>
-            )}
-            {truncateText(text)}
-          </StickerItem>
-        ))}
+        <StickerSVG
+          src={stickerData.image}
+          alt={
+            Array.isArray(stickerData.text)
+              ? stickerData.text[0]
+              : stickerData.text
+          }
+        />
       </StickerContainer>
     );
   }
+
+  // For text and icon stickers
+  const texts = Array.isArray(stickerData) ? stickerData : stickerData.text;
+  const iconName = !Array.isArray(stickerData) ? stickerData.icon : null;
+  const Icon = iconName ? icons[iconName] : null;
+
+  const truncateText = (text) => {
+    if (text.length > 12) {
+      return text.slice(0, 10) + "...";
+    }
+    return text;
+  };
+
+  return (
+    <StickerContainer $position={styles.position}>
+      {texts.map((text, index) => (
+        <StickerItem key={index} $style={styles.style}>
+          {Icon && (
+            <IconWrapper>
+              <Icon />
+            </IconWrapper>
+          )}
+          {truncateText(text)}
+        </StickerItem>
+      ))}
+    </StickerContainer>
+  );
 };
 
 export default Sticker;
