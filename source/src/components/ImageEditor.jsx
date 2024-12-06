@@ -74,67 +74,73 @@ const myTheme = {
 };
 
 const ImageEditorComponent = ({ onSave, initialImage }) => {
-  const editorRef = useRef(null);
   const containerRef = useRef(null);
-  const [ImageEditor, setImageEditor] = useState(null);
   const [editorInstance, setEditorInstance] = useState(null);
 
   useEffect(() => {
-    const loadEditor = async () => {
-      const tuiImageEditor = await import("tui-image-editor");
-      await import("tui-image-editor/dist/tui-image-editor.css");
-      setImageEditor(() => tuiImageEditor.default);
+    const initializeEditor = async () => {
+      try {
+        const ImageEditor = (await import("tui-image-editor")).default;
+        await import("tui-image-editor/dist/tui-image-editor.css");
+
+        if (!containerRef.current) return;
+
+        // Create a default blank canvas
+        const defaultImage =
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
+        const editor = new ImageEditor(containerRef.current, {
+          includeUI: {
+            loadImage: {
+              path: initialImage || defaultImage,
+              name: "image",
+            },
+            theme: myTheme,
+            menu: [
+              "crop",
+              "flip",
+              "rotate",
+              "draw",
+              "shape",
+              "icon",
+              "text",
+              "mask",
+              "filter",
+            ],
+            initMenu: "filter",
+            uiSize: {
+              width: "100%",
+              height: "100%",
+            },
+            menuBarPosition: "bottom",
+          },
+          cssMaxHeight: 700,
+          cssMaxWidth: 1000,
+          selectionStyle: {
+            cornerSize: 20,
+            rotatingPointOffset: 70,
+          },
+          usageStatistics: false,
+        });
+
+        setEditorInstance(editor);
+
+        // If there's an initial image, load it
+        if (initialImage) {
+          editor.loadImage(initialImage);
+        }
+
+        return () => {
+          editor.destroy();
+          setEditorInstance(null);
+        };
+      } catch (error) {
+        console.error("Error initializing editor:", error);
+      }
     };
-    loadEditor();
-  }, []);
 
-  useEffect(() => {
-    if (!ImageEditor || !containerRef.current) return;
-
-    const options = {
-      includeUI: {
-        loadImage: {
-          path:
-            initialImage ||
-            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
-          name: "image",
-        },
-        theme: myTheme,
-        menu: [
-          "crop",
-          "flip",
-          "rotate",
-          "draw",
-          "shape",
-          "icon",
-          "text",
-          "mask",
-          "filter",
-        ],
-        initMenu: "filter",
-        uiSize: {
-          width: "100%",
-          height: "100%",
-        },
-        menuBarPosition: "bottom",
-      },
-      cssMaxHeight: 700,
-      cssMaxWidth: 1000,
-      selectionStyle: {
-        cornerSize: 20,
-        rotatingPointOffset: 70,
-      },
-      usageStatistics: false,
-    };
-
-    const editor = new ImageEditor(containerRef.current, options);
-    setEditorInstance(editor);
-
-    return () => {
-      editor.destroy();
-      setEditorInstance(null);
-    };
-  }, [ImageEditor, initialImage]);
+    initializeEditor();
+  }, [initialImage]);
 
   const handleSave = () => {
     if (!editorInstance) return;
