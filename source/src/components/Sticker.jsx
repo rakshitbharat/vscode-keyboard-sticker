@@ -126,34 +126,36 @@ const StickerImage = styled(Image)`
 const StickerSVG = styled.div`
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
   opacity: 0.9;
-  transition: opacity 0.2s;
+  transition: all 0.2s ease;
   background-color: ${(props) => props.$color || "rgba(0, 0, 0, 0.1)"};
-  padding: 2px;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 0.8em;
+  font-size: 1em;
   text-align: center;
   line-height: 1.2;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
   &:hover {
     opacity: 1;
-    transform: scale(1.1);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
 
   svg {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
 `;
 
@@ -215,25 +217,38 @@ const Sticker = ({ keyData }) => {
           $color={color}
           dangerouslySetInnerHTML={{
             __html: `
-              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+              <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:${color};stop-opacity:1"/>
-                    <stop offset="100%" style="stop-color:${color};stop-opacity:0.8"/>
+                  <linearGradient id="grad_${
+                    keyData.label
+                  }" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:${color};stop-opacity:0.95"/>
+                    <stop offset="100%" style="stop-color:${color};stop-opacity:0.85"/>
                   </linearGradient>
+                  <filter id="shadow_${keyData.label}">
+                    <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.3"/>
+                  </filter>
                 </defs>
-                <rect width="64" height="64" rx="8" fill="url(#grad)"/>
-                <text 
-                  x="32" 
-                  y="36" 
-                  font-family="Arial" 
-                  font-size="20" 
-                  fill="white" 
-                  text-anchor="middle"
-                  font-weight="bold"
-                >
-                  ${text.charAt(0).toUpperCase()}
-                </text>
+                <rect width="100" height="100" rx="12" fill="url(#grad_${
+                  keyData.label
+                })" filter="url(#shadow_${keyData.label})"/>
+                <g transform="translate(50,50)" text-anchor="middle" dominant-baseline="middle">
+                  <text 
+                    y="-10"
+                    font-family="Arial, sans-serif" 
+                    font-size="24" 
+                    font-weight="bold" 
+                    fill="white"
+                    filter="url(#shadow_${keyData.label})"
+                  >${text.charAt(0).toUpperCase()}</text>
+                  <text 
+                    y="15"
+                    font-family="Arial, sans-serif" 
+                    font-size="14" 
+                    fill="white"
+                    opacity="0.9"
+                  >${text.slice(1)}</text>
+                </g>
               </svg>
             `,
           }}
