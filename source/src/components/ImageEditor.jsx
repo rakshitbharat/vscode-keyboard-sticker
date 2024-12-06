@@ -36,6 +36,18 @@ const EditorContainer = styled.div`
   .tui-image-editor-menu {
     background: ${(props) => props.theme.toolbarBg || "#2d2d2d"} !important;
   }
+
+  .tie-crop-button {
+    display: block !important;
+  }
+
+  .tui-image-editor-menu > .tui-image-editor-item[data-tool="crop"] {
+    display: block !important;
+  }
+
+  .tui-image-editor-partition {
+    display: block !important;
+  }
 `;
 
 const myTheme = {
@@ -110,7 +122,7 @@ const ImageEditorComponent = ({ onSave, initialImage }) => {
               "mask",
               "filter",
             ],
-            initMenu: "filter",
+            initMenu: "crop",
             uiSize: {
               width: "100%",
               height: "100%",
@@ -128,13 +140,13 @@ const ImageEditorComponent = ({ onSave, initialImage }) => {
             width: 500,
             height: 500,
           },
+          modules: ["crop"],
         });
 
         setEditorInstance(editor);
 
         // If there's an initial image, load it after a short delay
         if (initialImage) {
-          // Ensure the editor is fully initialized before loading the image
           setTimeout(() => {
             try {
               editor.loadImage(initialImage).then(() => {
@@ -168,7 +180,11 @@ const ImageEditorComponent = ({ onSave, initialImage }) => {
     if (!editorInstance) return;
     try {
       const dataURL = editorInstance.toDataURL();
-      onSave?.(dataURL);
+      if (dataURL) {
+        onSave?.(dataURL);
+      } else {
+        console.error("No image data available");
+      }
     } catch (err) {
       console.error("Error saving image:", err);
     }

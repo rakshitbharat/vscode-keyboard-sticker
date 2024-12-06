@@ -73,6 +73,7 @@ const KeyManagementPopup = ({ keyData, onClose, onSave }) => {
       ...keyData,
       customImage: imageData,
     });
+    onClose();
   };
 
   return (
