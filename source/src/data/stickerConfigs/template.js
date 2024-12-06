@@ -41,13 +41,19 @@ export default {
   },
   osConfigs: {
     mac: {
-      stickers: {},
+      stickers: {
+        // OS-specific stickers will be added here
+      },
     },
     windows: {
-      stickers: {},
+      stickers: {
+        // OS-specific stickers will be added here
+      },
     },
     ubuntu: {
-      stickers: {},
+      stickers: {
+        // OS-specific stickers will be added here
+      },
     },
   },
 };

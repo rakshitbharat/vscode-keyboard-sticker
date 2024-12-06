@@ -10,46 +10,33 @@ export const useStickerRegistry = () => {
   });
 
   useEffect(() => {
-    const loadThemes = () => {
-      try {
-        console.log("Current registry:", registry);
-        console.log("All available themes:", allThemes);
+    console.log("Loading themes...");
+    console.log("All available themes:", allThemes);
 
-        const themes = { ...registry };
+    const themes = { ...registry };
 
-        // Load all themes from the index file
-        Object.entries(allThemes).forEach(([key, theme]) => {
-          console.log(`Processing theme: ${key}`, theme);
+    // Load all themes from the index file
+    Object.entries(allThemes).forEach(([key, theme]) => {
+      console.log(`Processing theme: ${key}`, theme);
 
-          // Skip if it's already in registry or is a default theme
-          if (key === "vscodePurple" || key === "vscodeBlue" || themes[key]) {
-            console.log(`Skipping theme: ${key}`);
-            return;
-          }
-
-          // Ensure theme is a valid configuration
-          if (theme && theme.id && theme.styles) {
-            console.log(`Adding theme: ${key}`);
-            themes[key] = theme;
-          } else {
-            console.warn(`Invalid theme configuration for: ${key}`, theme);
-          }
-        });
-
-        console.log("Updated registry:", themes);
-        setRegistry(themes);
-      } catch (error) {
-        console.error("Error loading themes:", error);
+      // Skip if it's already in registry or is a default theme
+      if (key === "defaultConfig" || key === "types") {
+        console.log(`Skipping utility: ${key}`);
+        return;
       }
-    };
 
-    loadThemes();
+      if (themes[key]) {
+        console.log(`Theme already loaded: ${key}`);
+        return;
+      }
+
+      console.log(`Adding theme: ${key}`);
+      themes[key] = theme;
+    });
+
+    console.log("Final registry:", themes);
+    setRegistry(themes);
   }, []);
-
-  // Add a useEffect to log when registry changes
-  useEffect(() => {
-    console.log("Registry updated:", registry);
-  }, [registry]);
 
   return registry;
 };

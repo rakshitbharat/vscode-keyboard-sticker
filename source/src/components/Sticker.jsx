@@ -127,15 +127,30 @@ const Sticker = ({ keyData }) => {
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
 
+  console.log("Sticker render:", {
+    keyData,
+    selectedOS,
+    selectedConfig,
+    stickerRegistry,
+  });
+
   if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
+    console.log("Missing required props:", {
+      hasLabel: !!keyData?.label,
+      hasOS: !!selectedOS,
+      hasConfig: !!selectedConfig,
+      hasRegistry: !!stickerRegistry,
+    });
     return null;
   }
 
   const theme = stickerRegistry[selectedConfig];
+  console.log("Selected theme:", theme);
   if (!theme) return null;
 
   const stickerData =
     theme.osConfigs?.[selectedOS]?.stickers?.[keyData.label.toLowerCase()];
+  console.log("Sticker data:", stickerData);
   if (!stickerData) return null;
 
   const styles = theme.styles?.[selectedOS] || {

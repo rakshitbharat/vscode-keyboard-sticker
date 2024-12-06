@@ -338,6 +338,12 @@ const Header = () => {
     }
   };
 
+  const handleThemeChange = (e) => {
+    const newTheme = e.target.value;
+    console.log("Changing theme to:", newTheme);
+    dispatch(setSelectedConfig(newTheme));
+  };
+
   return (
     <>
       <StyledAppBar>
@@ -376,18 +382,21 @@ const Header = () => {
             <FormControl size="small">
               <StyledSelect
                 value={selectedConfig}
-                onChange={(e) => dispatch(setSelectedConfig(e.target.value))}
+                onChange={handleThemeChange}
                 displayEmpty
                 renderValue={(value) =>
                   configOptions.find((config) => config.id === value)?.label ||
                   "Select Theme"
                 }
               >
-                {configOptions.map((config) => (
-                  <MenuItem key={config.id} value={config.id}>
-                    {config.label}
-                  </MenuItem>
-                ))}
+                {configOptions.map((config) => {
+                  console.log("Rendering theme option:", config);
+                  return (
+                    <MenuItem key={config.id} value={config.id}>
+                      {config.label}
+                    </MenuItem>
+                  );
+                })}
               </StyledSelect>
             </FormControl>
           </Box>
