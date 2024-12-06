@@ -1,14 +1,10 @@
 import { NextResponse } from "next/server";
 
 export function middleware(request) {
-  // Handle SVG files from public folder
-  if (
-    request.nextUrl.pathname.startsWith("/themes/") &&
-    request.nextUrl.pathname.endsWith(".svg")
-  ) {
+  // Handle image files from public folder
+  if (request.nextUrl.pathname.startsWith("/api/image/")) {
     const response = new NextResponse(null, {
       headers: {
-        "Content-Type": "image/svg+xml",
         "Cache-Control": "public, max-age=31536000, immutable",
       },
     });
@@ -19,5 +15,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/themes/:path*"],
+  matcher: ["/api/image/:path*"],
 };

@@ -175,8 +175,8 @@ const Sticker = ({ keyData }) => {
       if (!stickerData?.image) return;
 
       try {
-        const path = stickerData.image.replace("/themes/", "");
-        const response = await fetch(`/api/svg/${path}`);
+        const path = stickerData.image.replace(/^\/themes\//, "");
+        const response = await fetch(`/api/image/${path}`);
         if (response.ok) {
           const content = await response.text();
           setSvgContent(content);
