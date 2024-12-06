@@ -11,6 +11,41 @@ fi
 # Create base directories
 mkdir -p public/themes/vscodePurple/{mac,windows,ubuntu}/{svg,png}
 
+# Function to create command key SVG
+create_command_svg() {
+    local os=$1
+    local color=""
+    
+    case $os in
+        "mac") color="rgb(156, 39, 176)";;      # Purple
+        "windows") color="rgb(68, 138, 255)";;   # Blue
+        "ubuntu") color="rgb(233, 84, 32)";;     # Orange
+    esac
+    
+    # Create SVG command icon
+    cat > "public/themes/vscodePurple/$os/svg/command.svg" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:${color};stop-opacity:0.95"/>
+      <stop offset="100%" style="stop-color:${color};stop-opacity:0.85"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="8" fill="url(#grad)"/>
+  <path d="M35 25 L65 25 L65 35 L75 35 L75 65 L65 65 L65 75 L35 75 L35 65 L25 65 L25 35 L35 35 Z" 
+        fill="white" stroke="white" stroke-width="1"/>
+</svg>
+EOF
+
+    # Convert SVG to PNG
+    convert -background none -size 128x128 "public/themes/vscodePurple/$os/svg/command.svg" \
+        "public/themes/vscodePurple/$os/png/command.png"
+
+    echo "Created: command icon (SVG + PNG) for ${os}"
+}
+
 # Function to create both SVG and PNG icons
 create_icons() {
     local name=$1
@@ -78,6 +113,8 @@ ICONS=(
 # Create icons for each OS
 for os in mac windows ubuntu; do
     echo "Creating icons for $os..."
+    create_command_svg "$os"
+    
     for icon_name in "${ICONS[@]}"; do
         create_icons "$icon_name" "$os"
     done

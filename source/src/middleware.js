@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 
 export function middleware(request) {
-  // Handle image files from public folder
+  // Handle all image files
   if (request.nextUrl.pathname.startsWith("/api/image/")) {
-    const response = new NextResponse(null, {
+    return new NextResponse(null, {
       headers: {
         "Cache-Control": "public, max-age=31536000, immutable",
       },
     });
-    return response;
   }
 
   return NextResponse.next();

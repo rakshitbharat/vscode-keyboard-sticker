@@ -21,5 +21,11 @@ export default async function handler(req, res) {
 
   res.setHeader("Content-Type", contentType);
   res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-  res.send(content);
+
+  // For SVGs, send as text; for others, send as buffer
+  if (type === "svg") {
+    res.send(content);
+  } else {
+    res.send(Buffer.from(content));
+  }
 }
