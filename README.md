@@ -41,7 +41,7 @@ Check out the live demo: [VSCode Keyboard Stickers](https://vscode-keyboard-stic
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/vscode-keyboard-sticker.git
+git clone https://github.com/rakshitbharat/vscode-keyboard-sticker.git
 cd vscode-keyboard-sticker
 ```
 
@@ -179,4 +179,4 @@ If you like this project, please consider giving it a ⭐️!
 - Community-contributed themes and stickers
 - Built with Next.js and Styled Components
 
-Project Link: [https://github.com/yourusername/vscode-keyboard-sticker](https://github.com/yourusername/vscode-keyboard-sticker)
+Project Link: [https://github.com/rakshitbharat/vscode-keyboard-sticker](https://github.com/rakshitbharat/vscode-keyboard-sticker)
