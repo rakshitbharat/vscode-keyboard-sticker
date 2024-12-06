@@ -1,244 +1,169 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import React from "react";
+import { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 
-// We'll initialize fabric later in useEffect
-let fabric = null;
-
 const EditorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-`;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  position: relative;
+  background: ${(props) => props.theme.background || "#1e1e1e"};
 
-const CanvasContainer = styled.div`
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
-`;
-
-const ToolBar = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-`;
-
-const Button = styled.button`
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  background: #9c27b0;
-  color: white;
-  cursor: pointer;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.9;
+  .tui-image-editor-container {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 500px !important;
   }
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  .tui-image-editor-main {
+    background: ${(props) => props.theme.background || "#1e1e1e"} !important;
+  }
+
+  .tui-image-editor-header-logo {
+    display: none;
+  }
+
+  .tui-image-editor-main-container {
+    height: 100% !important;
+    top: 0 !important;
+  }
+
+  .tui-image-editor-submenu {
+    background: ${(props) => props.theme.toolbarBg || "#2d2d2d"} !important;
+  }
+
+  .tui-image-editor-menu {
+    background: ${(props) => props.theme.toolbarBg || "#2d2d2d"} !important;
   }
 `;
 
-const FileInput = styled.input`
-  display: none;
-`;
+const myTheme = {
+  "common.bi.image": "", // Remove the default logo
+  "common.bisize.width": "0",
+  "common.bisize.height": "0",
+  "common.backgroundColor": "#1e1e1e",
+  "common.border": "0px",
 
-const UploadButton = styled(Button)`
-  background: #7b1fa2;
-`;
+  // Header
+  "header.backgroundImage": "none",
+  "header.backgroundColor": "transparent",
+  "header.border": "0px",
 
-const ImageEditor = ({ onSave, initialImage }) => {
-  const canvasRef = useRef(null);
+  // Menu
+  "menu.normalIcon.path": "#fff",
+  "menu.normalIcon.name": "#fff",
+  "menu.activeIcon.path": "#9c27b0",
+  "menu.activeIcon.name": "#9c27b0",
+  "menu.iconSize.width": "24px",
+  "menu.iconSize.height": "24px",
+
+  // Submenu
+  "submenu.backgroundColor": "#2d2d2d",
+  "submenu.partition.color": "#3f3f3f",
+  "submenu.normalIcon.path": "#fff",
+  "submenu.normalIcon.name": "#fff",
+  "submenu.activeIcon.path": "#9c27b0",
+  "submenu.activeIcon.name": "#9c27b0",
+
+  // Buttons
+  "button.backgroundColor": "#2d2d2d",
+  "button.border": "1px solid #3f3f3f",
+  "button.color": "#fff",
+  "button.activeColor": "#9c27b0",
+};
+
+const ImageEditorComponent = ({ onSave, initialImage }) => {
   const editorRef = useRef(null);
-  const [activeObject, setActiveObject] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const fileInputRef = useRef(null);
-  const [fabricInstance, setFabricInstance] = useState(null);
+  const containerRef = useRef(null);
+  const [ImageEditor, setImageEditor] = useState(null);
+  const [editorInstance, setEditorInstance] = useState(null);
 
-  // Load Fabric.js
   useEffect(() => {
-    const loadFabric = async () => {
-      try {
-        const fabricModule = await import("fabric");
-        fabric = fabricModule.fabric;
-        setFabricInstance(fabric);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to load Fabric.js:", error);
-      }
+    const loadEditor = async () => {
+      const tuiImageEditor = await import("tui-image-editor");
+      await import("tui-image-editor/dist/tui-image-editor.css");
+      setImageEditor(() => tuiImageEditor.default);
     };
-
-    loadFabric();
+    loadEditor();
   }, []);
 
-  // Initialize canvas after Fabric is loaded
   useEffect(() => {
-    if (isLoading || !fabricInstance || !canvasRef.current) return;
+    if (!ImageEditor || !containerRef.current) return;
 
-    const canvas = new fabricInstance.Canvas(canvasRef.current, {
-      width: 400,
-      height: 400,
-      backgroundColor: "#9c27b0",
-    });
+    const options = {
+      includeUI: {
+        loadImage: {
+          path:
+            initialImage ||
+            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+          name: "image",
+        },
+        theme: myTheme,
+        menu: [
+          "crop",
+          "flip",
+          "rotate",
+          "draw",
+          "shape",
+          "icon",
+          "text",
+          "mask",
+          "filter",
+        ],
+        initMenu: "filter",
+        uiSize: {
+          width: "100%",
+          height: "100%",
+        },
+        menuBarPosition: "bottom",
+      },
+      cssMaxHeight: 700,
+      cssMaxWidth: 1000,
+      selectionStyle: {
+        cornerSize: 20,
+        rotatingPointOffset: 70,
+      },
+      usageStatistics: false,
+    };
 
-    editorRef.current = canvas;
-
-    // Load initial image if provided
-    if (initialImage) {
-      fabricInstance.Image.fromURL(initialImage, (img) => {
-        img.scaleToWidth(canvas.width);
-        canvas.add(img);
-        canvas.centerObject(img);
-        canvas.renderAll();
-      });
-    }
-
-    // Add event listeners
-    canvas.on("selection:created", (e) => setActiveObject(e.target));
-    canvas.on("selection:cleared", () => setActiveObject(null));
+    const editor = new ImageEditor(containerRef.current, options);
+    setEditorInstance(editor);
 
     return () => {
-      canvas.dispose();
+      editor.destroy();
+      setEditorInstance(null);
     };
-  }, [isLoading, initialImage, fabricInstance]);
+  }, [ImageEditor, initialImage]);
 
-  const addText = () => {
-    if (!fabricInstance || !editorRef.current) return;
-    const text = new fabricInstance.IText("Edit me", {
-      left: 100,
-      top: 100,
-      fill: "white",
-      fontSize: 20,
-    });
-    editorRef.current.add(text);
-    editorRef.current.setActiveObject(text);
-  };
-
-  const addShape = (type) => {
-    if (!fabricInstance || !editorRef.current) return;
-    let shape;
-    switch (type) {
-      case "circle":
-        shape = new fabricInstance.Circle({
-          radius: 30,
-          fill: "white",
-          left: 100,
-          top: 100,
-        });
-        break;
-      case "rect":
-        shape = new fabricInstance.Rect({
-          width: 60,
-          height: 60,
-          fill: "white",
-          left: 100,
-          top: 100,
-        });
-        break;
-      default:
-        return;
-    }
-    editorRef.current.add(shape);
-    editorRef.current.setActiveObject(shape);
-  };
-
-  const removeSelected = () => {
-    if (!editorRef.current || !activeObject) return;
-    editorRef.current.remove(activeObject);
-    setActiveObject(null);
-  };
-
-  const downloadImage = () => {
-    if (!editorRef.current) return;
-    const dataURL = editorRef.current.toDataURL({
-      format: "png",
-      quality: 1,
-    });
-    const link = document.createElement("a");
-    link.download = "sticker.png";
-    link.href = dataURL;
-    link.click();
-  };
-
-  const previewOnKey = () => {
-    if (!editorRef.current) return;
-    const dataURL = editorRef.current.toDataURL({
-      format: "png",
-      quality: 1,
-    });
+  const handleSave = () => {
+    if (!editorInstance) return;
+    const dataURL = editorInstance.toDataURL();
     onSave?.(dataURL);
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file || !editorRef.current || !fabricInstance) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const result = event.target?.result;
-      if (!result) return;
-
-      fabricInstance.Image.fromURL(result, (img) => {
-        // Calculate scale to fit the canvas while maintaining aspect ratio
-        const scale = Math.min(
-          (editorRef.current.width * 0.8) / img.width,
-          (editorRef.current.height * 0.8) / img.height
-        );
-
-        img.scale(scale);
-
-        // Center the image
-        img.set({
-          left: (editorRef.current.width - img.width * scale) / 2,
-          top: (editorRef.current.height - img.height * scale) / 2,
-        });
-
-        editorRef.current.add(img);
-        editorRef.current.setActiveObject(img);
-        editorRef.current.renderAll();
-      });
-    };
-    reader.readAsDataURL(file);
-
-    // Reset the input so the same file can be selected again
-    e.target.value = "";
-  };
-
-  if (isLoading) {
-    return <EditorContainer>Loading editor...</EditorContainer>;
-  }
-
   return (
     <EditorContainer>
-      <CanvasContainer>
-        <canvas ref={canvasRef} />
-      </CanvasContainer>
-
-      <ToolBar>
-        <FileInput
-          type="file"
-          ref={fileInputRef}
-          accept="image/*"
-          onChange={handleImageUpload}
-        />
-        <UploadButton onClick={() => fileInputRef.current?.click()}>
-          Upload Image
-        </UploadButton>
-        <Button onClick={addText}>Add Text</Button>
-        <Button onClick={() => addShape("circle")}>Add Circle</Button>
-        <Button onClick={() => addShape("rect")}>Add Rectangle</Button>
-        <Button onClick={removeSelected} disabled={!activeObject}>
-          Remove Selected
-        </Button>
-        <Button onClick={downloadImage}>Download</Button>
-        <Button onClick={previewOnKey}>Preview on Key</Button>
-      </ToolBar>
+      <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+      <button
+        onClick={handleSave}
+        style={{
+          position: "absolute",
+          bottom: "20px",
+          right: "20px",
+          background: "#9c27b0",
+          color: "white",
+          border: "none",
+          padding: "10px 20px",
+          borderRadius: "4px",
+          cursor: "pointer",
+          zIndex: 1000,
+        }}
+      >
+        Save
+      </button>
     </EditorContainer>
   );
 };
 
-export default ImageEditor;
+export default ImageEditorComponent;

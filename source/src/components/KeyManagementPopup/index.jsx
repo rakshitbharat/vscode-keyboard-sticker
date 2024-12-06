@@ -16,75 +16,59 @@ const PopupOverlay = styled.div`
 `;
 
 const PopupContent = styled.div`
-  background: white;
+  background: ${(props) => props.theme.background || "#1e1e1e"};
   border-radius: 8px;
-  padding: 20px;
-  min-width: 500px;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow: auto;
-`;
-
-const TabContainer = styled.div`
+  width: 90%;
+  max-width: 1000px;
+  height: 80vh;
+  position: relative;
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  flex-direction: column;
 `;
 
-const Tab = styled.button`
-  padding: 10px 20px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: ${(props) => (props.$active ? "#9c27b0" : "#666")};
-  border-bottom: 2px solid
-    ${(props) => (props.$active ? "#9c27b0" : "transparent")};
-  transition: all 0.2s;
+const Header = styled.div`
+  padding: 16px;
+  border-bottom: 1px solid ${(props) => props.theme.border || "#3f3f3f"};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 
-  &:hover {
-    color: #9c27b0;
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: ${(props) => props.theme.text || "#ffffff"};
+  font-size: 16px;
+
+  span.key {
+    background: ${(props) => props.theme.toolbarBg || "#2d2d2d"};
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: bold;
   }
 `;
 
 const CloseButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
   background: none;
   border: none;
-  font-size: 20px;
+  color: ${(props) => props.theme.text || "#ffffff"};
   cursor: pointer;
-  color: #666;
+  font-size: 20px;
+  padding: 4px;
 
   &:hover {
-    color: #9c27b0;
+    opacity: 0.8;
   }
 `;
 
-const KeyInfo = styled.div`
-  margin-bottom: 20px;
-  padding: 10px;
-  background: #f5f5f5;
-  border-radius: 4px;
-
-  h3 {
-    margin: 0 0 10px 0;
-    color: #333;
-  }
-
-  p {
-    margin: 5px 0;
-    color: #666;
-  }
+const EditorContainer = styled.div`
+  flex: 1;
+  overflow: hidden;
 `;
 
 const KeyManagementPopup = ({ keyData, onClose, onSave }) => {
-  const [activeTab, setActiveTab] = useState("info");
-  const [previewImage, setPreviewImage] = useState(keyData?.customImage);
-
   const handleSave = (imageData) => {
-    setPreviewImage(imageData);
     onSave?.({
       ...keyData,
       customImage: imageData,
@@ -94,62 +78,18 @@ const KeyManagementPopup = ({ keyData, onClose, onSave }) => {
   return (
     <PopupOverlay onClick={onClose}>
       <PopupContent onClick={(e) => e.stopPropagation()}>
-        <CloseButton onClick={onClose}>&times;</CloseButton>
-
-        <TabContainer>
-          <Tab
-            $active={activeTab === "info"}
-            onClick={() => setActiveTab("info")}
-          >
-            Key Info
-          </Tab>
-          <Tab
-            $active={activeTab === "editor"}
-            onClick={() => setActiveTab("editor")}
-          >
-            Sticker Editor
-          </Tab>
-        </TabContainer>
-
-        {activeTab === "info" && (
-          <KeyInfo>
-            <h3>Key Details</h3>
-            <p>
-              <strong>Label:</strong> {keyData?.label}
-            </p>
-            <p>
-              <strong>Code:</strong> {keyData?.code}
-            </p>
-            {keyData?.location && (
-              <p>
-                <strong>Location:</strong> {keyData.location}
-              </p>
-            )}
-            {previewImage && (
-              <div>
-                <p>
-                  <strong>Custom Image:</strong>
-                </p>
-                <img
-                  src={previewImage}
-                  alt="Custom key image"
-                  style={{
-                    maxWidth: "100px",
-                    maxHeight: "100px",
-                    marginTop: "10px",
-                  }}
-                />
-              </div>
-            )}
-          </KeyInfo>
-        )}
-
-        {activeTab === "editor" && (
+        <Header>
+          <Title>
+            Sticker Editor - <span className="key">{keyData?.label}</span>
+          </Title>
+          <CloseButton onClick={onClose}>×</CloseButton>
+        </Header>
+        <EditorContainer>
           <ClientImageEditor
             onSave={handleSave}
             initialImage={keyData?.customImage}
           />
-        )}
+        </EditorContainer>
       </PopupContent>
     </PopupOverlay>
   );
