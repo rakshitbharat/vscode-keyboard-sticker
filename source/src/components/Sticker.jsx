@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import Image from "next/image";
 import { useStickerRegistry } from "@/hooks/useStickerRegistry";
 import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 const StickerContainer = styled.div`
   position: absolute;
@@ -154,38 +154,43 @@ const Sticker = ({ keyData }) => {
   const selectedConfig = useSelector((state) => state.keyboard.selectedConfig);
   const stickerRegistry = useStickerRegistry();
 
-  if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
-    return null;
-  }
+  // Get theme and sticker data
+  const { theme, stickerData } = useMemo(() => {
+    if (!keyData?.label || !selectedOS || !selectedConfig || !stickerRegistry) {
+      return { theme: null, stickerData: null };
+    }
 
-  const theme = stickerRegistry[selectedConfig];
-  if (!theme) return null;
+    const theme = stickerRegistry[selectedConfig];
+    if (!theme) return { theme: null, stickerData: null };
 
-  const stickerData =
-    theme.osConfigs?.[selectedOS]?.stickers?.[keyData.label.toLowerCase()];
+    const stickerData =
+      theme.osConfigs?.[selectedOS]?.stickers?.[keyData.label.toLowerCase()];
 
-  if (!stickerData) return null;
+    return { theme, stickerData };
+  }, [keyData?.label, selectedOS, selectedConfig, stickerRegistry]);
 
+  // Load SVG content
   useEffect(() => {
     const loadSvg = async () => {
+      if (!stickerData?.image) return;
+
       try {
-        const path = stickerData.image?.replace("/themes/", "");
-        if (path) {
-          const response = await fetch(`/api/svg/${path}`);
-          if (response.ok) {
-            const content = await response.text();
-            setSvgContent(content);
-          }
+        const path = stickerData.image.replace("/themes/", "");
+        const response = await fetch(`/api/svg/${path}`);
+        if (response.ok) {
+          const content = await response.text();
+          setSvgContent(content);
         }
       } catch (error) {
         console.error("Error loading SVG:", error);
       }
     };
 
-    if (stickerData.image) {
-      loadSvg();
-    }
+    loadSvg();
   }, [stickerData?.image]);
+
+  // Early return if no data
+  if (!theme || !stickerData) return null;
 
   // If it's an image sticker
   if (stickerData.image) {
