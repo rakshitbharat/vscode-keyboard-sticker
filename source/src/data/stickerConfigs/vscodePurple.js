@@ -45,97 +45,89 @@ export default {
     mac: {
       stickers: {
         command: {
-          image: "/themes/vscodePurple/mac/command.svg",
+          image: "/themes/vscodePurple/mac/svg/command.svg",
         },
         option: {
-          image: "/themes/vscodePurple/mac/command.svg",
+          image: "/themes/vscodePurple/mac/svg/command.svg",
         },
         control: {
-          image: "/themes/vscodePurple/mac/command.svg",
-        },
-        f1: {
-          text: ["Help"],
-          image: "/themes/vscodePurple/mac/circle-question.svg",
+          image: "/themes/vscodePurple/mac/svg/command.svg",
         },
         c: {
           text: ["⌘ + C", "Copy Line"],
           icon: "copy",
-          image: "/themes/vscodePurple/mac/svg/copy.svg",
+          image: "/themes/vscodePurple/mac/png/copy.png",
         },
         v: {
           text: ["⌘ + V", "Paste"],
           icon: "paste",
-          image: "/themes/vscodePurple/mac/paste.svg",
+          image: "/themes/vscodePurple/mac/png/paste.png",
         },
         x: {
           text: ["⌘ + X", "Cut"],
           icon: "cut",
-          image: "/themes/vscodePurple/mac/scissors.svg",
+          image: "/themes/vscodePurple/mac/png/scissors.png",
         },
         z: {
           text: ["⌘ + Z", "Undo"],
           icon: "undo",
-          image: "/themes/vscodePurple/mac/rotate-left.svg",
+          image: "/themes/vscodePurple/mac/png/rotate-left.png",
         },
-        f: {
-          text: ["⌘ + F", "Find"],
-          image: "/themes/vscodePurple/mac/magnifying-glass.svg",
-        },
-        b: {
-          text: ["⌘ + B", "Toggle Sidebar"],
-          image: "/themes/vscodePurple/mac/table-columns.svg",
-        },
-        s: {
-          text: ["⌘ + S", "Save"],
-          image: "/themes/vscodePurple/mac/floppy-disk.svg",
-        },
-        p: {
-          text: ["⌘ + P", "Quick Open"],
-          image: "/themes/vscodePurple/mac/folder-open.svg",
+        f1: {
+          text: ["Help"],
+          image: "/themes/vscodePurple/mac/svg/circle-question.svg",
         },
         f2: {
           text: ["Rename"],
-          image: "/themes/vscodePurple/mac/pen-to-square.svg",
+          image: "/themes/vscodePurple/mac/svg/pen-to-square.svg",
         },
-        f3: {
-          text: ["Find Next"],
-          image: "/themes/vscodePurple/mac/magnifying-glass.svg",
+        f: {
+          text: ["⌘ + F", "Find"],
+          image: "/themes/vscodePurple/mac/png/magnifying-glass.png",
         },
-        f4: {
-          text: ["Find Previous"],
-          image: "/themes/vscodePurple/mac/magnifying-glass.svg",
+        b: {
+          text: ["⌘ + B", "Toggle Sidebar"],
+          image: "/themes/vscodePurple/mac/png/table-columns.png",
+        },
+        s: {
+          text: ["⌘ + S", "Save"],
+          image: "/themes/vscodePurple/mac/png/floppy-disk.png",
+        },
+        p: {
+          text: ["⌘ + P", "Quick Open"],
+          image: "/themes/vscodePurple/mac/png/folder-open.png",
         },
         f5: {
           text: ["Debug"],
-          image: "/themes/vscodePurple/mac/bug.svg",
+          image: "/themes/vscodePurple/mac/png/bug.png",
         },
         f6: {
           text: ["Focus Editor"],
-          image: "/themes/vscodePurple/mac/pen.svg",
+          image: "/themes/vscodePurple/mac/png/pen.png",
         },
         f7: {
           text: ["Terminal"],
-          image: "/themes/vscodePurple/mac/terminal.svg",
+          image: "/themes/vscodePurple/mac/png/terminal.png",
         },
         f8: {
           text: ["Problems"],
-          image: "/themes/vscodePurple/mac/triangle-exclamation.svg",
+          image: "/themes/vscodePurple/mac/png/triangle-exclamation.png",
         },
         f9: {
           text: ["Breakpoint"],
-          image: "/themes/vscodePurple/mac/circle-dot.svg",
+          image: "/themes/vscodePurple/mac/png/circle-dot.png",
         },
         f10: {
           text: ["Menu"],
-          image: "/themes/vscodePurple/mac/bars.svg",
+          image: "/themes/vscodePurple/mac/png/bars.png",
         },
         f11: {
           text: ["Full Screen"],
-          image: "/themes/vscodePurple/mac/expand.svg",
+          image: "/themes/vscodePurple/mac/png/expand.png",
         },
         f12: {
           text: ["Dev Tools"],
-          image: "/themes/vscodePurple/mac/wrench.svg",
+          image: "/themes/vscodePurple/mac/png/wrench.png",
         },
       },
     },
